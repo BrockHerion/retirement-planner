@@ -1,5 +1,6 @@
 {
-  "name": "ts-electron-boilerplate",
+  "name": "retirement-planner",
+  "productName": "Retirement Planner",
   "version": "1.0.0",
   "description": "Simple boilerplate project for working with Typescript and Electron",
   "main": "dist/index.js",
@@ -23,7 +24,9 @@
   },
   "homepage": "https://github.com/BrockHerion/ts-electron-boilerplate#readme",
   "dependencies": {
+    "@types/uuid": "^8.3.0",
     "electron": "^11.3.0",
-    "typescript": "^4.1.5"
+    "typescript": "^4.1.5",
+    "uuid": "^8.3.2"
   }
 }
