@@ -6,6 +6,18 @@ import { createWindow } from './config/window';
 
 import { WIDTH, HEIGHT } from './constants';
 
+const env = process.env.NODE_ENV || 'development';
+
+// Enables hot reload
+if (env === 'development') {
+  try {
+    require('electron-reloader')(module, {
+      debug: true,
+      watchRenderer: true
+    });
+  } catch (e) { console.error(`An error occurred ${e}`) }
+}
+
 app.on('ready', () => {
 
   // Create a new window and add properties to it
@@ -13,7 +25,7 @@ app.on('ready', () => {
   createMenu();
 
   // Get the index.html file
-  const index = path.join(__dirname, '..', 'public', 'index.html');
+  const index = path.join(__dirname, '..', 'index.html');
 
   // Load the window
   window.loadFile(index)
@@ -24,4 +36,7 @@ app.on('ready', () => {
       console.error(`An error occurred: ${e}`);
     });
 
+  if (env === 'development') {
+    window.webContents.openDevTools();
+  }
 });
