@@ -22,14 +22,14 @@ export function retirementAccountGrowth(person_age, person_retirement_age, princ
         //Contributions without catchup contributions
         //No withdraws
 
-        contributions = annual_contribution
+        let contributions = annual_contribution
         return (CompoundInterest(principal , rate, periods, years) + FutureValueSeries(contributions, rate, periods, years))
 
     } else if (person_age >= 50 && person_age < person_retirement_age) {
         //Contributions with catchup contributions
         //No withdraws
 
-        contributions = annual_contribution + catchup_contribution
+        let contributions = annual_contribution + catchup_contribution
         return (CompoundInterest(principal , rate, periods, years) + FutureValueSeries(contributions, rate, periods, years))
 
     } else if (person_age >= person_retirement_age){
