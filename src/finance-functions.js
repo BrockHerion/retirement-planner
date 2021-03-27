@@ -42,7 +42,7 @@ function retirementAccountGrowth(person_age, person_retirement_age, principal, a
 
 
 //Growth of an investment account (brokerage account)
-function retirementAccountGrowth(person_age, person_retirement_age, principal, annual_contribution, rate, periods, years, withdraw_rate){
+function investmentAccountGrowth(person_age, person_retirement_age, principal, annual_contribution, rate, periods, years, withdraw_rate){
 
     if (person_age <person_retirement_age) {
         //Contributions without withdraws
@@ -132,3 +132,4 @@ function InflationAdjustedValue(principal , inflation_rate, years){
 	return principal *  ((1 - (rate))**(years))
 }
 
+module.exports = { CompoundInterest, FutureValueSeries, retirementAccountGrowth, investmentAccountGrowth, socialSecurityIncome, taxesDue, InflationAdjustedValues };
