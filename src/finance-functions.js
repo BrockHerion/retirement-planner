@@ -3,13 +3,13 @@ Functions used to calculate the financial components ofthe data set
 */
 
 //Growth of the investment principal 
-function CompoundInterest(principal , rate, periods, years) {
+function compoundInterest(principal , rate, periods, years) {
 
 	return principal *  ((1 + (rate/periods))**(periods * years))
 }
 
 //Growth of contributions to an investment
-function FutureValueSeries(annual_contribution, rate, periods, years){
+function futureValueSeries(annual_contribution, rate, periods, years){
 
    return annual_contribution * ((((1 + (rate/periods))**(periods * years)) -1) / (rate/periods))
 }
@@ -127,9 +127,9 @@ function taxesDue(taxable_income, captital_gains) {
 }
 
 //Inflation adjusted value of an asset
-function InflationAdjustedValue(principal , inflation_rate, years){
+function inflationAdjustedValue(principal , inflation_rate, years){
 
 	return principal *  ((1 - (rate))**(years))
 }
 
-module.exports = { CompoundInterest, FutureValueSeries, retirementAccountGrowth, investmentAccountGrowth, socialSecurityIncome, taxesDue, InflationAdjustedValues };
+module.exports = { compoundInterest, futureValueSeries, retirementAccountGrowth, investmentAccountGrowth, socialSecurityIncome, taxesDue, inflationAdjustedValue };
