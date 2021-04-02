@@ -61,31 +61,22 @@ function socialSecurityIncome(person_start_SS_age, person_est_SS_benefit) {
     switch(person_start_SS_age){
         case 62:
             return person_est_SS_benefit * 70%
-            break;
         case 63:
             return person_est_SS_benefit * 75%
-            break;
         case 64:
             return person_est_SS_benefit * 80%
-            break;
         case 65:
             return person_est_SS_benefit * 86.7%
-            break;
         case 66:
             return person_est_SS_benefit * 93.3%
-            break;
         case 67:
             return person_est_SS_benefit * 100%
-            break;
         case 68:
             return person_est_SS_benefit * 108%
-            break;
         case 69:
             return person_est_SS_benefit * 116%
-            break;
         case 70:
             return person_est_SS_benefit * 124%
-            break;
         default:
             //error
             break;
