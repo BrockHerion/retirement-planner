@@ -60,32 +60,23 @@ function investmentAccountGrowth(person_age, person_retirement_age, principal, a
 function socialSecurityIncome(person_start_SS_age, person_est_SS_benefit) {
     switch(person_start_SS_age){
         case 62:
-            return person_est_SS_benefit * 70%
-            break;
+            return person_est_SS_benefit * .70
         case 63:
-            return person_est_SS_benefit * 75%
-            break;
+            return person_est_SS_benefit * .75
         case 64:
-            return person_est_SS_benefit * 80%
-            break;
+            return person_est_SS_benefit * .80
         case 65:
-            return person_est_SS_benefit * 86.7%
-            break;
+            return person_est_SS_benefit * .867
         case 66:
-            return person_est_SS_benefit * 93.3%
-            break;
+            return person_est_SS_benefit * .933
         case 67:
-            return person_est_SS_benefit * 100%
-            break;
+            return person_est_SS_benefit * .100
         case 68:
-            return person_est_SS_benefit * 108%
-            break;
+            return person_est_SS_benefit * .108
         case 69:
-            return person_est_SS_benefit * 116%
-            break;
+            return person_est_SS_benefit * .116
         case 70:
-            return person_est_SS_benefit * 124%
-            break;
+            return person_est_SS_benefit * .124
         default:
             //error
             break;
@@ -95,29 +86,29 @@ function socialSecurityIncome(person_start_SS_age, person_est_SS_benefit) {
 //Determine the ammount of taxes due from taxable income 401k, IRA, Social Security, Investment accounts, Traditional Retirement accounts
 function taxesDue(taxable_income, captital_gains) {
     let taxes = 0
-    taxes += capital_gains * 20%
+    taxes += capital_gains * .20
 
     switch(taxable_income){
         case (taxable_income <= 9875.00):
-            taxes +=  taxable_income * 10%
+            taxes +=  taxable_income * .1
             break;
         case (taxable_income > 9875.00 && taxable_income <= 40125.00):
-            taxes +=  taxable_income * 12% + 987.50
+            taxes +=  taxable_income * .12 + 987.50
             break;
         case (taxable_income > 40125.00 && taxable_income <= 85525.00):
-            taxes +=  taxable_income * 22% + 4617.50
+            taxes +=  taxable_income * .22 + 4617.50
             break;
         case (taxable_income > 85525.00 && taxable_income <= 163300.00):
-            taxes +=  taxable_income * 24% + 14605.50
+            taxes +=  taxable_income * .24 + 14605.50
             break;
         case (taxable_income > 163300.00 && taxable_income <= 207350):
-            taxes +=  taxable_income * 32% + 33271.50   
+            taxes +=  taxable_income * .32 + 33271.50   
             break;
         case (taxable_income > 207350.00 && taxable_income <= 518400.00):
-            taxes +=  taxable_income * 35% + 47367.50 
+            taxes +=  taxable_income * .35 + 47367.50 
             break;
         case (taxable_income > 518400.00):
-            taxes +=  taxable_income * 37% + 156234.00    
+            taxes +=  taxable_income * .37 + 156234.00    
             break;
         default:
             //error
