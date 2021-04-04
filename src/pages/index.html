@@ -20,13 +20,116 @@
         <div class="wrapper">
             <section class="fill-height">
                 <div class="inputs">
-                    <h1>Inputs</h1>
+                    <h1>Model Input</h1>
                     <form>
-                        <div class="form-group">
-                            <label for="testFormControl">Test Label</label>
-                            <input type="text" class="form-control" id="testFormControl" placeholder="Test Text">
-                            <small id="testHelp" class="form-text text-muted">This is a test</small>
-                        </div>
+
+                        <table class="table table-hover">
+                            <thead>
+                              <tr class="table-success">
+                                <th scope="col">Person</th>
+                                <th scope="col">Account</th>
+                                <th scope="col">Balance</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr class="table-default">
+                                <td>Albert</td>
+                                <td>401k</td>>
+                                <td>$37,526.08</td>
+                              </tr>
+                              <tr class="table-default">
+                                <td>Albert</td>
+                                <td>IRA</td>>
+                                <td>$16,288.91</td>
+                              </tr>
+                              <tr class="table-default">
+                                <td>Jessica</td>
+                                <td>IRA</td>>
+                                <td>$12,486.78</td>
+                              </tr>
+                              <tr class="table-default">
+                                <td>Jessica</td>
+                                <td>Brokerage Account</td>>
+                                <td>$61,253.00</td>
+                              </tr>
+                              <tr class="table-default">
+                                <td></td>
+                                <td>Total Assets</td>>
+                                <td>$127,854.77</td>
+                              </tr>
+                            </tbody>
+                          </table>
+
+                          <table class="table table-hover">
+                            <thead>
+                              <tr class="table-success">
+                                <th scope="col">Person</th>
+                                <th scope="col">Age to start retirement</th>
+                                <th scope="col">Age to start Social Security</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr class="table-default">
+                                <td>Albert</td>
+                                <td>
+                                  <div class="form-group">
+                                  <input type="text" class="form-control" id="inputRetirementAge" placeholder="62">
+                                  </div>
+                                </td>>
+                                <td>
+                                  <div class="form-group">
+                                  <input type="text" class="form-control" id="inputSSAge" placeholder="67">
+                                  </div>
+                                </td>>
+                              </tr>
+                              <tr class="table-default">
+                                <td>Jessica</td>
+                                <td>
+                                  <div class="form-group">
+                                  <input type="text" class="form-control" id="inputRetirementAge" placeholder="64">
+                                  </div>
+                                </td>>
+                                <td>
+                                  <div class="form-group">
+                                  <input type="text" class="form-control" id="inputSSAge" placeholder="64">
+                                  </div>
+                                </td>>
+                              </tr>
+                            </tbody>
+                          </table>
+
+
+                          <table class="table table-hover">
+                            <tbody>
+                              <tr class="table-default">
+                                <td>Expected Rate of Return</td>
+                                <td>
+                                  <div class="form-group">
+                                  <input type="text" class="form-control" id="inputRoR" placeholder="7%">
+                                  </div>
+                                </td>>
+                              <tr class="table-default">
+                                <td>Expected Inflation Rate</td>
+                                <td>
+                                  <div class="form-group">
+                                  <input type="text" class="form-control" id="inputInflationRate" placeholder="2.5%">
+                                  </div>
+                                </td>>
+                              <tr class="table-default"></tr>
+                                <td>Withdraw rate in retirement</td>
+                                <td>
+                                  <div class="form-group">
+                                  <input type="text" class="form-control" id="inputWithdrawRate" placeholder="4%">
+                                  </div>
+                                </td>>
+                              <tr class="table-default">
+                                </tr><td>Years of retirement to model</td>
+                                <td>
+                                  <div class="form-group">
+                                  <input type="text" class="form-control" id="inputDuration" placeholder="30">
+                                  </div>
+                                </td>>
+                          </table>
                     </form>
                 </div>
             </section>
