@@ -2,7 +2,7 @@ const { app, Menu } = require('electron');
 
 const isMac = process.platform === 'darwin';
 
-createMenu = () => {
+const createMenu = () => {
   const template = [
     ...(isMac ? [{
       label: app.name,

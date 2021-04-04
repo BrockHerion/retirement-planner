@@ -15,7 +15,7 @@ app.on('ready', () => {
   const window = new BrowserWindow({ width: process.env.WIDTH, height: process.env.HEIGHT });
   createMenu();
 
-  const index = path.join(__dirname, 'index.html');
+  const index = path.join(__dirname, 'src/pages/index.html');
 
   window.loadFile(index)
     .then(() => {

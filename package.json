@@ -3,7 +3,7 @@
   "productName": "Retirement Planner",
   "version": "1.0.0",
   "description": "Simple boilerplate project for working with Typescript and Electron",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
