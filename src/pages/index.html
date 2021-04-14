@@ -20,13 +20,31 @@
         <div class="wrapper">
             <section class="fill-height">
                 <div class="inputs">
-                    <h1>Inputs</h1>
+                    <h1>Model Parameters</h1>
                     <form>
-                        <div class="form-group">
-                            <label for="testFormControl">Test Label</label>
-                            <input type="text" class="form-control" id="testFormControl" placeholder="Test Text">
-                            <small id="testHelp" class="form-text text-muted">This is a test</small>
-                        </div>
+                      <div>
+                        <label>[Table of Persons / Accounts goes here]</label>
+                      </div>
+                      <div>
+                        <label>-----------divider--------------</label>
+                      </div>
+
+                      <div class="form-group">
+                        <label>Expected Rate of Return</label>
+                        <input type="text" class="form-control" id="inputRoR" placeholder="7%">
+                      </div>
+                      <div class="form-group">
+                        <label>Expected Inflation Rate</label>             
+                        <input type="text" class="form-control" id="inputInflationRate" placeholder="2.5%">
+                      </div>
+                      <div class="form-group">
+                        <label>Withdraw rate in retirement</label>
+                        <input type="text" class="form-control" id="inputWithdrawRate" placeholder="4%">
+                      </div>
+                      <div class="form-group">
+                        <label>Years of retirement to model</label>
+                        <input type="text" class="form-control" id="inputDuration" placeholder="30">
+                      </div>
                     </form>
                 </div>
             </section>
