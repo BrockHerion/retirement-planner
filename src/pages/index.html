@@ -51,9 +51,62 @@
             <section class="fill-height">
                 <div class="results">
                     <div class="results__filter">
-                        <h1>Results Section</h1>
-                        <p id="testTextSection"></p>
-                    </div>
+                        <!-- <h1>Results Section</h1> -->
+                        
+                    
+                    
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                          
+                      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                      </button>
+                    
+                      <div class="collapse navbar-collapse" id="navbarColor03">
+                        <ul class="navbar-nav mr-auto">
+
+                          <li class="nav-item select my-2 my-lg-0">
+                            <div class="form-group m-auto mx-lg-0">
+                              <!-- <label for="outputType">Output Format</label> -->
+                              <select class="form-control" id="outputType">
+                                <option>Tabular Output</option>
+                                <option>Graphic Output</option>
+                                <option>Tabular/Graphic Output</option>
+                              </select>
+                            </div>
+                          </li>
+                          <li class="nav-item select my-2 my-lg-0">
+                            <div class="form-group m-auto mx-lg-0">
+                              <!-- <label for="filterPerson">Person Select</label> -->
+                              <select class="form-control" id="filterPerson">
+                                <option>All People</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                              </select>
+                            </div>
+                          </li>
+                          <li class="nav-item select my-2 my-lg-0">
+                            <div class="form-group m-auto mx-lg-0"">
+                              <!-- <label for="filterAccounts">Example select</label> -->
+                              <select class="form-control" id="filterAccounts">
+                                <option>All Accounts</option>
+                                <option>401k</option>
+                                <option>Roth 401k</option>
+                                <option>IRA</option>
+                                <option>Roth IRA</option>
+                                <option>Brokerage Account</option>
+                              </select>
+                            </div>
+                        </li>
+                        </ul>
+                        <form class="form-inline m-auto mx-lg-0">
+                          <button class="btn btn-primary my-2 my-sm-0" id="btn_calculate" type="submit">Calculate</button>
+                        </form>
+                      </div>
+                    </nav>
+                    <p id="testTextSection"></p>
+                  </div>
                 </div>
             </section>
         </div>
