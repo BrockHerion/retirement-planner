@@ -117,6 +117,31 @@ function taxesDue(taxable_income, captital_gains) {
     return taxes
 }
 
+//Retreive the model input for Rate of Return
+function getRateofReturn(){
+    let rate = document.getElementById('inputRoR');
+    return rate
+}
+
+//Retreive the model input for inflation Rate
+function getInflationRate(){
+    let rate = document.getElementById('inputInflationRate');
+    return rate
+}
+
+//Retreive the model input for withdraw Rate
+function getWithdrawRate(){
+    let rate = document.getElementById('inputWithdrawRate');
+    return rate
+}
+
+//Retreive the model input for the druation of the model in retirement
+function getModelDuration(){
+    let years = document.getElementById('inputDuration');
+    return years
+}
+
+
 //Inflation adjusted value of an asset
 function inflationAdjustedValue(principal , inflation_rate, years){
 
