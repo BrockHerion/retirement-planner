@@ -322,5 +322,20 @@ function calculateModelData(people, ror, withdrawRate, inflationRate, periods){
     return dataset
 }
 
+function getInputRoR(){
+    return document.getElementByID('inputRoR').innerHTML
+}
 
-module.exports = { withdraw, compoundInterest, futureValueSeries, accountGrowth, socialSecurityIncome, taxesDue, inflationAdjustedValue, calculateModelData }
+function getInputInflationRate(){
+    return document.getElementByID('inputInflationRate').innerHTML
+}
+
+function getInputWithdrawRate(){
+    return document.getElementByID('inputWithdrawRate').innerHTML
+}
+
+function getInputDuration(){
+    return document.getElementByID('inputDuration').innerHTML
+}
+
+module.exports = { getInputRoR, getInputInflationRate, getInputWithdrawRate, getInputDuration, withdraw, compoundInterest, futureValueSeries, accountGrowth, socialSecurityIncome, taxesDue, inflationAdjustedValue, calculateModelData }

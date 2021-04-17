@@ -1,3 +1,6 @@
+const finance-functions = require('finance-functions')
+
+
 window.addEventListener('load', () => {
   
   var testFormControl = document.getElementById('testFormControl');
