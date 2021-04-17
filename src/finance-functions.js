@@ -204,7 +204,6 @@ function calculateModelData(people, ror, withdrawRate, inflationRate, periods){
                         //Three scenarios for contributions and withdraws based on age
                         if ((people[p].age + i) < 50 ) {
                             contributions = people[p].accounts[a].annual_contribution
-
                             roth401k = accountGrowth(people[p].age, people[p].retirementAge, i, roth401kPriorBalance, contributions, ror, periods)
                             roth401kPriorBalance = roth401k
                         }else if ((people[p].age + i) >= 50 && (people[p].age + i) < people[p].retirementAge) {
