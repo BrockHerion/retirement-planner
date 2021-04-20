@@ -8,6 +8,4 @@ const store = configureStore({
   }
 })
 
-console.log(`Initial State: ${store.getState()}`)
-
 module.exports = store
