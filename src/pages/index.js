@@ -1,4 +1,4 @@
-const finance-functions = require('finance-functions')
+const financeFunctions = require('financeFunctions')
 
 
 window.addEventListener('load', () => {
