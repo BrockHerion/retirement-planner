@@ -5,6 +5,7 @@ const person = createSlice({
   initialState: [],
   reducers: {
     addPerson: (state, {payload}) => [...state, payload],
+    loadPeople: (_, {payload}) => payload
   }
 })
 
