@@ -23,11 +23,13 @@
   },
   "homepage": "https://github.com/BrockHerion/ts-electron-boilerplate#readme",
   "dependencies": {
+    "@reduxjs/toolkit": "^1.5.1",
     "dotenv": "^8.2.0",
     "electron": "^11.3.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "electron-reloader": "^1.2.0"
+    "electron-reloader": "^1.2.0",
+    "eslint": "^7.24.0"
   }
 }
