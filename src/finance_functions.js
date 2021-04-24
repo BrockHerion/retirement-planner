@@ -1,26 +1,5 @@
 const store = require('./data/store')
 
-//Create a test array of Persons
-function test(){
-//   const p1 = new Person('Albert', 40, 65, 2500, 65)
-//   const p2 = new Person('Jessica', 30, 65, 2500, 65)
-//   p1.createAccount('401k', 0, 120, 12000)
-//   p1.createAccount('Roth 401k', 10000, 2000, 0)
-//   p1.createAccount('IRA', 10000, 3000, 0)
-//   p1.createAccount('Roth IRA', 10000, 4000, 0)
-//   p1.createAccount('Brokerage', 10000, 5000, 0)
-//   p2.createAccount('401k', 0, 19500, 6500)
-    
-//   let persons = [p1,p2]
-//   // let ror = .07  //use a function
-//   // let withdrawRate = .04 //use a function
-//   // let inflationRate = .02 //use a function
-//   // let periods = 12; //use a function
-    
-//   // let model = calculateModelData(persons, ror, withdrawRate, inflationRate, periods)
-//   // console.table(model)
-//   console.log("in test()")
-}
 
 function testPeeps(){
   store.getState().persons.map(p => console.log(p) )
@@ -194,7 +173,7 @@ function calculateModelData(people, ror, withdrawRate, inflationRate, periods){
 
   //Loop for each year
   for(i=0; i < duration ; i++){
-    y = year++
+    const y = year++
         
     //Loop for each Person
     for(p=0; p < people.length ; p++){
@@ -335,23 +314,25 @@ function calculateModelData(people, ror, withdrawRate, inflationRate, periods){
         //reset at loop end
         withdrawAmount=0
       }
-      //Income calculations
-      withdraws = taxableWithdraws + nonTaxableWithdraws + capitalGainsWithdraws
-      ssIncome = socialSecurityIncome(people[p].age, people[p].retirementAge, i, people[p].SSAge,people[p].estSSBenefits)
-      net = netIncome(ssIncome, taxableWithdraws, nonTaxableWithdraws, capitalGainsWithdraws)
-      taxes = taxesDue((taxableWithdraws + ssIncome), capitalGainsWithdraws)
-      gross = net - taxes
-      inflationAdjustedIncome = inflationAdjustedValue(gross, inflationRate, i)
 
-      //Add the Record to the dataset
-      // dataset.push(new Record(y,people[p].name,traditional401k,roth401k,IRA,rothIRA,brokerage,withdraws.toFixed(2),ssIncome.toFixed(2),net.toFixed(2),taxes.toFixed(2),gross.toFixed(2),inflationAdjustedIncome.toFixed(2)))
-      let record = {y,people[p].name,traditional401k,roth401k,IRA,rothIRA,brokerage,withdraws.toFixed(2),ssIncome.toFixed(2),net.toFixed(2),taxes.toFixed(2),gross.toFixed(2),inflationAdjustedIncome.toFixed(2)}
-      dataset.push(record)
-      //reset at loop end
-      taxableWithdraws = 0
-      nonTaxableWithdraws = 0
-      capitalGainsWithdraws = 0
     }
+    //Income calculations
+    withdraws = (taxableWithdraws + nonTaxableWithdraws + capitalGainsWithdraws).toFixed(2)
+    ssIncome = socialSecurityIncome(people[p].age, people[p].retirementAge, i, people[p].SSAge,people[p].estSSBenefits).toFixed(2)
+    net = netIncome(ssIncome, taxableWithdraws, nonTaxableWithdraws, capitalGainsWithdraws).toFixed(2)
+    taxes = taxesDue((taxableWithdraws + ssIncome), capitalGainsWithdraws).toFixed(2)
+    gross = (net - taxes).toFixed(2)
+    inflationAdjustedIncome = inflationAdjustedValue(gross, inflationRate, i).toFixed(2)
+
+    //Add the Record to the dataset
+    let record = {y,traditional401k,roth401k,IRA,rothIRA,brokerage,withdraws,ssIncome,net,taxes,gross,inflationAdjustedIncome}
+    dataset.push(record)
+
+
+    //reset at loop end
+    taxableWithdraws = 0
+    nonTaxableWithdraws = 0
+    capitalGainsWithdraws = 0
   }
 
   return dataset
