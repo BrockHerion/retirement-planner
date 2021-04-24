@@ -339,6 +339,7 @@ function calculateModelData(people, ror, withdrawRate, inflationRate, periods){
 }
 
 
+
 module.exports = { testPeeps, getRoR, getInflationRate, getWithdrawRate, getYearsOfRetirement, 
                    getOutputType, getPersonFilter, getAccountFilter, withdraw, compoundInterest, 
                    futureValueSeries, accountGrowth, socialSecurityIncome, taxesDue, 
