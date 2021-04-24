@@ -10,3 +10,6 @@ const person = createSlice({
 })
 
 module.exports = person
+
+
+

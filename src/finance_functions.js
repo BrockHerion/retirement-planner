@@ -1,28 +1,63 @@
-/*
-Functions used to calculate the financial components ofthe data set
-*/
+const store = require('./data/store')
 
 //Create a test array of Persons
 function test(){
-  const p1 = new Person('Albert', 40, 65, 2500, 65)
-  const p2 = new Person('Jessica', 30, 65, 2500, 65)
-  p1.createAccount('401k', 0, 120, 12000)
-  p1.createAccount('Roth 401k', 10000, 2000, 0)
-  p1.createAccount('IRA', 10000, 3000, 0)
-  p1.createAccount('Roth IRA', 10000, 4000, 0)
-  p1.createAccount('Brokerage', 10000, 5000, 0)
-  p2.createAccount('401k', 0, 19500, 6500)
+//   const p1 = new Person('Albert', 40, 65, 2500, 65)
+//   const p2 = new Person('Jessica', 30, 65, 2500, 65)
+//   p1.createAccount('401k', 0, 120, 12000)
+//   p1.createAccount('Roth 401k', 10000, 2000, 0)
+//   p1.createAccount('IRA', 10000, 3000, 0)
+//   p1.createAccount('Roth IRA', 10000, 4000, 0)
+//   p1.createAccount('Brokerage', 10000, 5000, 0)
+//   p2.createAccount('401k', 0, 19500, 6500)
     
-  let persons = [p1,p2]
-  let ror = .07  //use a function
-  let withdrawRate = .04 //use a function
-  let inflationRate = .02 //use a function
-  let periods = 12; //use a function
+//   let persons = [p1,p2]
+//   // let ror = .07  //use a function
+//   // let withdrawRate = .04 //use a function
+//   // let inflationRate = .02 //use a function
+//   // let periods = 12; //use a function
     
-  let model = calculateModelData(persons, ror, withdrawRate, inflationRate, periods)
-  console.table(model)
+//   // let model = calculateModelData(persons, ror, withdrawRate, inflationRate, periods)
+//   // console.table(model)
+//   console.log("in test()")
 }
-//test();
+
+function testPeeps(){
+  store.getState().persons.map(p => console.log(p) )
+}
+
+//Get value of the model inputs
+function getRoR(rateOfReturn){
+  // console.log('RoR=', rateOfReturn)
+  return rateOfReturn
+}
+
+function getInflationRate(inflationRate){
+  // console.log('Inflation=', inflationRate)
+  return inflationRate
+}
+
+function getWithdrawRate(withdrawRate){
+  // console.log('Withdraw=', withdrawRate)
+  return withdrawRate
+}
+
+function getYearsOfRetirement(yearsOfRetirement){
+  // console.log('RearsOfRetirement=', yearsOfRetirement)
+  return yearsOfRetirement
+}
+function getOutputType(outputType){
+  // console.log('outputType=', outputType)
+  return outputType
+}
+function getPersonFilter(personFilter){
+  // console.log('outputType=', personFilter)
+  return personFilter
+}
+function getAccountFilter(accountFilter){
+  // console.log('outputType=', accountFilter)
+  return accountFilter
+}
 
 //Growth of the investment principal 
 function compoundInterest(principal , rate, periods, years) {
@@ -121,7 +156,6 @@ function getDuration(people){
   duration += retirementYears;
   return duration
 }
-
 
 //Calculate the amount withdrawn from an account
 function withdraw(principal, withdrawRate){
@@ -310,8 +344,9 @@ function calculateModelData(people, ror, withdrawRate, inflationRate, periods){
       inflationAdjustedIncome = inflationAdjustedValue(gross, inflationRate, i)
 
       //Add the Record to the dataset
-      dataset.push(new Record(y,people[p].name,traditional401k,roth401k,IRA,rothIRA,brokerage,withdraws.toFixed(2),ssIncome.toFixed(2),net.toFixed(2),taxes.toFixed(2),gross.toFixed(2),inflationAdjustedIncome.toFixed(2)))
-            
+      // dataset.push(new Record(y,people[p].name,traditional401k,roth401k,IRA,rothIRA,brokerage,withdraws.toFixed(2),ssIncome.toFixed(2),net.toFixed(2),taxes.toFixed(2),gross.toFixed(2),inflationAdjustedIncome.toFixed(2)))
+      let record = {y,people[p].name,traditional401k,roth401k,IRA,rothIRA,brokerage,withdraws.toFixed(2),ssIncome.toFixed(2),net.toFixed(2),taxes.toFixed(2),gross.toFixed(2),inflationAdjustedIncome.toFixed(2)}
+      dataset.push(record)
       //reset at loop end
       taxableWithdraws = 0
       nonTaxableWithdraws = 0
@@ -323,4 +358,7 @@ function calculateModelData(people, ror, withdrawRate, inflationRate, periods){
 }
 
 
-module.exports = { withdraw, compoundInterest, futureValueSeries, accountGrowth, socialSecurityIncome, taxesDue, inflationAdjustedValue, calculateModelData }
+module.exports = { test, testPeeps, getRoR, getInflationRate, getWithdrawRate, getYearsOfRetirement, 
+                   getOutputType, getPersonFilter, getAccountFilter, withdraw, compoundInterest, 
+                   futureValueSeries, accountGrowth, socialSecurityIncome, taxesDue, 
+                   inflationAdjustedValue, calculateModelData }

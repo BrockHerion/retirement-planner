@@ -31,20 +31,20 @@
                       </div>
 
                       <div class="form-group">
-                        <label>Expected Rate of Return</label>
-                        <input type="text" class="form-control" id="inputRoR" placeholder="7%">
+                        <label for="inputRoR">Expected Rate of Return</label>
+                        <input type="number" class="form-control" id="inputRoR" >
                       </div>
                       <div class="form-group">
-                        <label>Expected Inflation Rate</label>             
-                        <input type="text" class="form-control" id="inputInflationRate" placeholder="2.5%">
+                        <label for="inputInflationRate">Expected Inflation Rate</label>             
+                        <input type="number" class="form-control" id="inputInflationRate" >
                       </div>
                       <div class="form-group">
-                        <label>Withdraw rate in retirement</label>
-                        <input type="text" class="form-control" id="inputWithdrawRate" placeholder="4%">
+                        <label for="inputWithdrawRate">Withdraw rate in retirement</label>
+                        <input type="number" class="form-control" id="inputWithdrawRate" >
                       </div>
                       <div class="form-group">
-                        <label>Years of retirement to model</label>
-                        <input type="text" class="form-control" id="inputDuration" placeholder="30">
+                        <label for="inputYearsOfRetirement">Years of retirement to model</label>
+                        <input type="number" class="form-control" id="inputYearsOfRetirement" >
                       </div>
                     </form>
                 </div>
@@ -52,10 +52,7 @@
             <section class="fill-height">
                 <div class="results">
                     <div class="results__filter">
-                        <!-- <h1>Results Section</h1> -->
-                        
-                    
-                    
+
                     <nav class="navbar navbar-expand-lg navbar-light bg-light">
                           
                       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +64,6 @@
 
                           <li class="nav-item select my-2 my-lg-0">
                             <div class="form-group m-auto mx-lg-0">
-                              <!-- <label for="outputType">Output Format</label> -->
                               <select class="form-control" id="outputType">
                                 <option>Tabular Output</option>
                                 <option>Graphic Output</option>
@@ -77,8 +73,7 @@
                           </li>
                           <li class="nav-item select my-2 my-lg-0">
                             <div class="form-group m-auto mx-lg-0">
-                              <!-- <label for="filterPerson">Person Select</label> -->
-                              <select class="form-control" id="filterPerson">
+                              <select class="form-control" id="personFilter">
                                 <option>All People</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -88,9 +83,8 @@
                             </div>
                           </li>
                           <li class="nav-item select my-2 my-lg-0">
-                            <div class="form-group m-auto mx-lg-0"">
-                              <!-- <label for="filterAccounts">Example select</label> -->
-                              <select class="form-control" id="filterAccounts">
+                            <div class="form-group m-auto mx-lg-0">
+                              <select class="form-control" id="accountFilter">
                                 <option>All Accounts</option>
                                 <option>401k</option>
                                 <option>Roth 401k</option>
