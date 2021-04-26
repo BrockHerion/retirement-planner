@@ -21,10 +21,17 @@
     padding: .25rem .5rem;
 }
 
-.results__filter {
+.results__filter, .results__output {
     background-color: white;
     border-radius: 4px;
     box-shadow: 0.1rem 0.1rem 0.3rem gray;
     padding: 0.25rem 0.3rem;
     margin-top: .5rem;
+}
+
+#addPerson, #addPersonModalClose {
+    margin-bottom:.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

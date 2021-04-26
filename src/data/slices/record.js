@@ -1,11 +1,17 @@
 const { createSlice } = require('@reduxjs/toolkit')
 
 const record = createSlice({
-  name: 'records',
-  initialState: [],
+  name: 'record',
+  initialState: {
+    records: []
+  },
   reducers: {
-    setRecords: (_, {payload}) => payload,
-    clearRecords: () => []
+    setRecords: (state, {payload}) => {
+      state.records = payload
+    },
+    clearRecords: (state) => {
+      state.records = []
+    }
   }
 })
 

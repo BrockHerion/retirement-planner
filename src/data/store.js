@@ -5,8 +5,8 @@ const record = require('./slices/record')
 
 const store = configureStore({
   reducer: {
-    persons: person.reducer,
-    records: record.reducer
+    person: person.reducer,
+    record: record.reducer
   }
 })
 

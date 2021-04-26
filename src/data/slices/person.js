@@ -1,11 +1,17 @@
 const { createSlice } = require('@reduxjs/toolkit')
 
 const person = createSlice({
-  name: 'persons',
-  initialState: [],
+  name: 'person',
+  initialState: {
+    people: []
+  },
   reducers: {
-    addPerson: (state, {payload}) => [...state, payload],
-    loadPeople: (_, {payload}) => payload
+    addPerson: (state, {payload}) => {
+      state.people = [...state.people, payload]
+    },
+    loadPeople: (state, {payload}) => {
+      state.people = payload
+    }
   }
 })
 
