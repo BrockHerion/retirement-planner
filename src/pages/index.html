@@ -8,6 +8,8 @@
     <link href="../../assets/css/bootstrap.min.css" type="text/css" rel="stylesheet">
     <link href="../../assets/css/app.css" type="text/css" rel="stylesheet">
     <link href="../../assets/css/planning.css" type="text/css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
     <script>require('./renderer.js')</script>
 </head>
 <body>
@@ -20,16 +22,25 @@
         <div class="wrapper">
             <section class="fill-height">
                 <div class="inputs">
-                    <h1>Model Parameters</h1>
+                    <div id="addPeople">
+                      <button id="addPerson" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPersonModal">
+                        <i class="ri-add-line ri-xl"></i>
+                      </button>
+                      <table id="personTable" class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col"># Accounts</th>
+                            <th scope="col">Edit</th>
+                            <th scope="col">Delete</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
+                    </div>
+                    <hr />
                     <form>
-                      <div>
-                        <label>[Table of Persons / Accounts goes here]</label>
-                        <button id="testAddPerson" class="btn btn-primary">TEST ADD PERSON</button>
-                      </div>
-                      <div>
-                        <label>-----------divider--------------</label>
-                      </div>
-
                       <div class="form-group">
                         <label for="inputRoR">Expected Rate of Return</label>
                         <input type="number" class="form-control" id="inputRoR" >
@@ -51,10 +62,8 @@
             </section>
             <section class="fill-height">
                 <div class="results">
-                    <div class="results__filter">
-
+                  <div class="results__filter">
                     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                          
                       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                       </button>
@@ -100,11 +109,72 @@
                         </form>
                       </div>
                     </nav>
-                    <p id="testTextSection"></p>
+                  </div>
+                  <div class="results__output">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Year</th>
+                          <th scope="col">Traditional 401K</th>
+                          <th scope="col">Roth 401K</th>
+                          <th scope="col">IRA</th>
+                          <th scope="col">Roth IRA</th>
+                          <th scope="col">Brokerage</th>
+                          <th scope="col">Withdraw</th>
+                          <th scope="col">SS Income</th>
+                          <th scope="col">Net Income</th>
+                          <th scope="col">Taxes</th>
+                          <th scope="col">Gross Inflation</th>                          
+                          <th scope="col">Inflation Adjusted Gross Income</th>
+                        </tr>
+                      </thead>
+                    </table>
                   </div>
                 </div>
             </section>
         </div>
+
+        <div class="modal fade" id="addPersonModal" tabindex="-1" aria-labelledby="addPersonModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form role="form" id="addEditPersonForm">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addPersonModalLabel">Add/Edit Person</h5>
+                  <button type="button" id="addPersonModalClose" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="ri-close-circle-line ri-xl"></i>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                      <label for="personName">Name</label>
+                      <input type="text" name='name' id="personName" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <label for="personName">Age</label>
+                      <input type="number" name='age' id="personAge" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <label for="personName">Retirement Age</label>
+                      <input type="text" name="retirementAge" id="personRetirementAge" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <label for="personName">Est. SS Benefits</label>
+                      <input type="text" name="estSSBenefits" id="personEstSSBenefits" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <label for="personName">SS Age</label>
+                      <input type="text" name="SSAge" id="personSSAge" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        
     </main>
 </body>
 </html>

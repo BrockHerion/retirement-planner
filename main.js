@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, screen, BrowserWindow } = require('electron')
 const path = require('path')
 const { createMenu } = require('./src/config/menu')
 const { enableHotReload } = require('./src/utils/enableHotReload')
@@ -12,9 +12,11 @@ if (env === 'development') {
 }
 
 app.on('ready', () => {
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize
+
   const window = new BrowserWindow({ 
-    width: process.env.WIDTH, 
-    height: process.env.HEIGHT,
+    width: width, 
+    height: height,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
