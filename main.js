@@ -2,6 +2,7 @@ const { app, screen, BrowserWindow } = require('electron')
 const path = require('path')
 const { createMenu } = require('./src/config/menu')
 const { enableHotReload } = require('./src/utils/enableHotReload')
+const { loadFile, saveFile } = require('./src/data/dataManager')
 
 require('dotenv').config()
 
@@ -14,8 +15,8 @@ if (env === 'development') {
 app.on('ready', () => {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
-  const window = new BrowserWindow({ 
-    width: width, 
+  const window = new BrowserWindow({
+    width: width,
     height: height,
     webPreferences: {
       nodeIntegration: true,
@@ -29,6 +30,8 @@ app.on('ready', () => {
   window.loadFile(index)
     .then(() => {
       console.log('Window was loaded successfully!')
+      loadFile()
+      saveFile()
     })
     .catch((e) => {
       console.error(`An error occurred: ${e}`)
