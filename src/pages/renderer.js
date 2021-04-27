@@ -1,6 +1,7 @@
 const store = require('../data/store')
 const person = require('../data/slices/person')
 const uuid = require('uuid')
+const { saveFile } = require('../data/dataManager')
 
 // const { 
 //   getRoR, 
@@ -48,8 +49,8 @@ window.addEventListener('load',  () => {
     e.preventDefault()
 
     const formData = new FormData(addEditPersonForm)
-    const person = {
-      id: uuid.v4(),
+    const newPerson = {
+      id: uuid.v4().toString(),
       name: formData.get('name'),
       age: formData.get('age'),
       retirementAge: formData.get('retirementAge'),
@@ -59,11 +60,15 @@ window.addEventListener('load',  () => {
     }
 
     store.dispatch(
-      addPerson(person)
+      addPerson(newPerson)
     )
-    
+    saveFile()
     bindPersonsGrid()
+
+    addEditPersonForm.reset()
   })
+
+  bindPersonsGrid()
 })
 
 const bindPersonsGrid = () => {

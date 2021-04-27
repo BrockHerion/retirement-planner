@@ -26,6 +26,8 @@
     "@reduxjs/toolkit": "^1.5.1",
     "dotenv": "^8.2.0",
     "electron": "^11.3.0",
+    "redux": "^4.1.0",
+    "redux-persist": "^6.0.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

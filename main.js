@@ -31,7 +31,6 @@ app.on('ready', () => {
     .then(() => {
       console.log('Window was loaded successfully!')
       loadFile()
-      saveFile()
     })
     .catch((e) => {
       console.error(`An error occurred: ${e}`)
