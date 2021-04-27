@@ -2,15 +2,15 @@ const store = require('../data/store')
 const person = require('../data/slices/person')
 const uuid = require('uuid')
 const { saveFile } = require('../data/dataManager')
+const { calculate } = require('../finance_functions')
 
-// const { 
-//   getRoR, 
-//   getInflationRate, 
-//   getWithdrawRate, 
-//   getYearsOfRetirement, 
-//   getOutputType, 
-//   getPersonFilter, 
-//   getAccountFilter } = require('../finance_functions')
+const { 
+  getRoR, 
+  getInflationRate, 
+  getWithdrawRate, 
+  getOutputType, 
+  getPersonFilter, 
+  getAccountFilter } = require('../finance_functions')
 
 
 const { addPerson } = person.actions
@@ -25,22 +25,20 @@ window.addEventListener('load',  () => {
 
   calculateButton.addEventListener('click',  e => {
     e.preventDefault()
-
-    // const rateOfReturn = document.getElementById('inputRoR').value
-    // const inflationRate = document.getElementById('inputInflationRate').value
-    // const withdrawRate = document.getElementById('inputWithdrawRate').value
-    // const yearsOfRetirement = document.getElementById('inputYearsOfRetirement').value
+    let P = store.getState().person.people
+    // console.log(P.length)
+    // store.getState().person.people.map(p => {
+    // console.log(p.name)
+    // })
+    const rateOfReturn = document.getElementById('inputRoR').value
+    const inflationRate = document.getElementById('inputInflationRate').value
+    const withdrawRate = document.getElementById('inputWithdrawRate').value
+    const yearsOfRetirement = document.getElementById('inputYearsOfRetirement').value
+    const personFilter = document.getElementById('personFilter').value
+    const accountFilter = document.getElementById('accountFilter').value
     // const outputType = document.getElementById('outputType').value
-    // const personFilter = document.getElementById('personFilter').value
-    // const accountFilter = document.getElementById('accountFilter').value
 
-    // getRoR(rateOfReturn)
-    // getInflationRate(inflationRate)
-    // getWithdrawRate(withdrawRate)
-    // getYearsOfRetirement(yearsOfRetirement)
-    // getOutputType(outputType)
-    // getPersonFilter(personFilter)
-    // getAccountFilter(accountFilter)
+    calculate(rateOfReturn, inflationRate, withdrawRate, yearsOfRetirement, personFilter, accountFilter)
   })
 
   const addEditPersonForm = document.getElementById('addEditPersonForm')
