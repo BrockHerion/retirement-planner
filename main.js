@@ -9,7 +9,7 @@ require('dotenv').config()
 const env = process.env.NODE_ENV || 'development'
 
 if (env === 'development') {
-  enableHotReload()
+    enableHotReload()
 }
 
 app.on('ready', () => {
@@ -25,7 +25,7 @@ app.on('ready', () => {
   })
   createMenu()
 
-  const index = path.join(__dirname, 'src/pages/index.html')
+    const index = path.join(__dirname, 'src/pages/index.html')
 
   window.loadFile(index)
     .then(() => {

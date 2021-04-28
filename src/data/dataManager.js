@@ -3,7 +3,6 @@ const store = require('./store')
 const person = require('./slices/person')
 
 const { loadPeople } = person.actions
-
 const path = 'data.json'
 
 // load file
