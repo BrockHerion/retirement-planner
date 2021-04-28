@@ -1,18 +1,8 @@
 const store = require('../data/store')
 const person = require('../data/slices/person')
-const record = require('../data/slices/record')
 const uuid = require('uuid')
 const { saveFile, loadFile } = require('../data/dataManager')
 const { calculate } = require('../finance_functions')
-
-const { 
-  getRoR, 
-  getInflationRate, 
-  getWithdrawRate, 
-  getOutputType, 
-  getPersonFilter, 
-  getAccountFilter } = require('../finance_functions')
-
 
 const { addPerson, addAccountToPerson, deletePerson } = person.actions
 
@@ -36,6 +26,7 @@ window.addEventListener('load',  () => {
     //load file for testing
     loadFile()
     calculate(rateOfReturn, inflationRate, withdrawRate, yearsOfRetirement, personFilter, accountFilter)
+    bindRecordsGrid()
   })
 
   const addEditPersonForm = document.getElementById('addEditPersonForm')
@@ -75,22 +66,31 @@ window.addEventListener('load',  () => {
     const formData = new FormData(addEditAccountForm)
     const accountType = document.getElementById('selectAccountType')
 
-    const account = {
-      id: uuid.v4(),
-      type: accountType.value,
-      balance: formData.get('balance'),
-      annual_contribution: formData.get('annualContrib'),
-      catchup_contributuon: formData.get('catchupContrib')
+    const includedAccounts = person.accounts.filter(a => a.type === accountType)
+    console.log(includedAccounts)
+
+    if (includedAccounts.length > 0) {
+      document.getElementById('accountError').innerText = 'Error: Account type already added'
+    } else {
+      const account = {
+        id: uuid.v4(),
+        type: accountType.value,
+        balance: formData.get('balance'),
+        annual_contribution: formData.get('annualContrib'),
+        catchup_contributuon: formData.get('catchupContrib')
+      }
+
+      store.dispatch(
+        addAccountToPerson({id: selectedPersonId, person: person, account: account})
+      )
+
+      saveFile()
+      bindData()
+
+      addEditAccountForm.reset()
     }
 
-    store.dispatch(
-      addAccountToPerson({id: selectedPersonId, person: person, account: account})
-    )
 
-    saveFile()
-    bindData()
-
-    addEditAccountForm.reset()
   })
 
   bindData()
@@ -158,19 +158,21 @@ const bindRecordsGrid = () => {
   tableBody.innerHTML = ''
 
   store.getState().record.records.map(r => {
-      const row = tableBody.insertRow()
+    const row = tableBody.insertRow()
 
     row.innerHTML = `
       <td>${r.year}</td>
-      <td>${r.traditional401k}</td>
-      <td>${r.roth401k}</td>
-      <td>${r.IRA}</td>
-      <td>${r.rothIRA}</td>
-      <td>${r.brokerage}</td>
-      <td>${r.withdraws}</td>
-      <td>${r.ssIncome}</td>
-      <td>${r.netIncome}</td>
-      <td>${r.taxes}</td>
-      <td>${r.grossIncome}</td>
-      <td>${r.inflationAdjustedIncome}</td>
+      <td>$${r.traditional401k}</td>
+      <td>$${r.roth401k}</td>
+      <td>$${r.IRA}</td>
+      <td>$${r.rothIRA}</td>
+      <td>$${r.brokerage}</td>
+      <td>$${r.withdraws}</td>
+      <td>$${r.ssIncome}</td>
+      <td>$${r.netIncome}</td>
+      <td>$${r.taxes}</td>
+      <td>$${r.grossIncome}</td>
+      <td>$${r.inflationAdjustedIncome}</td>
     `
+  })
+}
