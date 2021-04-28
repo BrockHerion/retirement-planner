@@ -13,7 +13,7 @@ const {
   getAccountFilter } = require('../finance_functions')
 
 
-const { addPerson } = person.actions
+const { addPerson, addAccountToPerson, deletePerson } = person.actions
 
 window.addEventListener('load',  () => {
 
@@ -86,8 +86,11 @@ window.addEventListener('load',  () => {
       catchup_contributuon: formData.get('catchupContrib')
     }
 
-    person.accounts.push(account)
+    store.dispatch(
+      addAccountToPerson({id: selectedPersonId, person: person, account: account})
+    )
 
+    saveFile()
     bindData()
 
     addEditAccountForm.reset()
@@ -99,6 +102,17 @@ window.addEventListener('load',  () => {
 const bindData = () => {
   bindPersonsGrid()
   bindAddAccountPersonSelector()
+}
+
+const deletePersonFromTable = (e) => {
+  e.preventDefault()
+  
+  const personId = e.target.getAttribute('data-person-id')
+  store.dispatch(
+    deletePerson({id: personId})
+  )
+
+  bindData()
 }
 
 const bindPersonsGrid = () => {
@@ -113,18 +127,20 @@ const bindPersonsGrid = () => {
       <td>${p.name}</td>
       <td>${p.accounts.length}</td>
       <td>
-        <button id='edit-${p.id}' class="btn btn-link">
-          <i class="ri-edit-fill"></i>
-        </button>
-      </td>
-      <td>
-        <button id='delete-${p.id}' class="btn btn-link">
+        <button 
+          id='delete-${p.id}'
+          class="btn btn-link" 
+          data-person-id='${p.id}'>
           <i class="ri-close-circle-line"></i>
         </button>
       </td>
     `
+
+    const rowButton = document.getElementById(`delete-${p.id}`)
+    rowButton.addEventListener('click', deletePersonFromTable)
   })
 }
+
 
 const bindAddAccountPersonSelector = () => {
   const selector = document.getElementById('selectPerson')
