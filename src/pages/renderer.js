@@ -1,7 +1,8 @@
 const store = require('../data/store')
 const person = require('../data/slices/person')
+const record = require('../data/slices/record')
 const uuid = require('uuid')
-const { saveFile } = require('../data/dataManager')
+const { saveFile, loadFile } = require('../data/dataManager')
 const { calculate } = require('../finance_functions')
 
 const { 
@@ -25,19 +26,15 @@ window.addEventListener('load',  () => {
 
   calculateButton.addEventListener('click',  e => {
     e.preventDefault()
-    let P = store.getState().person.people
-    // console.log(P.length)
-    // store.getState().person.people.map(p => {
-    // console.log(p.name)
-    // })
     const rateOfReturn = document.getElementById('inputRoR').value
     const inflationRate = document.getElementById('inputInflationRate').value
     const withdrawRate = document.getElementById('inputWithdrawRate').value
     const yearsOfRetirement = document.getElementById('inputYearsOfRetirement').value
     const personFilter = document.getElementById('personFilter').value
     const accountFilter = document.getElementById('accountFilter').value
-    // const outputType = document.getElementById('outputType').value
 
+    //load file for testing
+    loadFile()
     calculate(rateOfReturn, inflationRate, withdrawRate, yearsOfRetirement, personFilter, accountFilter)
   })
 
@@ -154,3 +151,26 @@ const bindAddAccountPersonSelector = () => {
     selector.appendChild(option)
   })
 }
+
+const bindRecordsGrid = () => {
+  const tableBody = document.getElementById('recordsTable').getElementsByTagName('tbody')[0]
+
+  tableBody.innerHTML = ''
+
+  store.getState().record.records.map(r => {
+      const row = tableBody.insertRow()
+
+    row.innerHTML = `
+      <td>${r.year}</td>
+      <td>${r.traditional401k}</td>
+      <td>${r.roth401k}</td>
+      <td>${r.IRA}</td>
+      <td>${r.rothIRA}</td>
+      <td>${r.brokerage}</td>
+      <td>${r.withdraws}</td>
+      <td>${r.ssIncome}</td>
+      <td>${r.netIncome}</td>
+      <td>${r.taxes}</td>
+      <td>${r.grossIncome}</td>
+      <td>${r.inflationAdjustedIncome}</td>
+    `
