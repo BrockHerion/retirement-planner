@@ -1,8 +1,7 @@
 const store = require('../data/store')
 const person = require('../data/slices/person')
-const record = require('../data/slices/record')
 const uuid = require('uuid')
-const { saveFile, loadFile } = require('../data/dataManager')
+const { saveFile } = require('../data/dataManager')
 const { calculate } = require('../finance_functions')
 
 const { 
@@ -15,7 +14,6 @@ const {
 
 
 const { addPerson } = person.actions
-const { addRecord } = record.actions
 
 window.addEventListener('load',  () => {
 
@@ -23,45 +21,24 @@ window.addEventListener('load',  () => {
   document.getElementById('inputRoR').value = 7
   document.getElementById('inputInflationRate').value = 2.5
   document.getElementById('inputWithdrawRate').value = 4
-  document.getElementById('inputYearsOfRetirement').value = 5
+  document.getElementById('inputYearsOfRetirement').value = 30
 
   calculateButton.addEventListener('click',  e => {
     e.preventDefault()
-
+    let P = store.getState().person.people
+    // console.log(P.length)
+    // store.getState().person.people.map(p => {
+    // console.log(p.name)
+    // })
     const rateOfReturn = document.getElementById('inputRoR').value
     const inflationRate = document.getElementById('inputInflationRate').value
     const withdrawRate = document.getElementById('inputWithdrawRate').value
     const yearsOfRetirement = document.getElementById('inputYearsOfRetirement').value
     const personFilter = document.getElementById('personFilter').value
     const accountFilter = document.getElementById('accountFilter').value
+    // const outputType = document.getElementById('outputType').value
 
-    loadFile()
     calculate(rateOfReturn, inflationRate, withdrawRate, yearsOfRetirement, personFilter, accountFilter)
-    
-
-    //test record output
-    // for (i=0; i <5; i++){
-    //   let newRecord = {
-    //     year: 2021 + i,
-    //     traditional401k: 1000 * i,
-    //     roth401k: 1000 * i,
-    //     IRA: 1000 * i,
-    //     rothIRA: 1000 * i,
-    //     brokerage: 1000 * i,
-    //     withdraws: 1000 * i,
-    //     ssIncome: 1000 * i,
-    //     netIncome: 1000 * i,
-    //     taxes: 1000 * i,
-    //     grossIncome: 1000 * i,
-    //     inflationAdjustedIncome: 1000 * i
-    //   }
-
-    //   store.dispatch(
-    //     addRecord(newRecord)
-    //   )
-    // }
-    bindRecordsGrid()
-
   })
 
   const addEditPersonForm = document.getElementById('addEditPersonForm')
@@ -84,13 +61,45 @@ window.addEventListener('load',  () => {
       addPerson(newPerson)
     )
     saveFile()
-    bindPersonsGrid()
+    
+    bindData()
 
     addEditPersonForm.reset()
   })
 
-  bindPersonsGrid()
+  const addEditAccountForm = document.getElementById('addEditAccountForm')
+
+  addEditAccountForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+
+    const selectedPersonId = document.getElementById('selectPerson').value
+    const person = store.getState().person.people.find(p => p.id === selectedPersonId)
+
+    const formData = new FormData(addEditAccountForm)
+    const accountType = document.getElementById('selectAccountType')
+
+    const account = {
+      id: uuid.v4(),
+      type: accountType.value,
+      balance: formData.get('balance'),
+      annual_contribution: formData.get('annualContrib'),
+      catchup_contributuon: formData.get('catchupContrib')
+    }
+
+    person.accounts.push(account)
+
+    bindData()
+
+    addEditAccountForm.reset()
+  })
+
+  bindData()
 })
+
+const bindData = () => {
+  bindPersonsGrid()
+  bindAddAccountPersonSelector()
+}
 
 const bindPersonsGrid = () => {
   const tableBody = document.getElementById('personTable').getElementsByTagName('tbody')[0]
@@ -117,28 +126,15 @@ const bindPersonsGrid = () => {
   })
 }
 
+const bindAddAccountPersonSelector = () => {
+  const selector = document.getElementById('selectPerson')
 
-const bindRecordsGrid = () => {
-  const tableBody = document.getElementById('recordsTable').getElementsByTagName('tbody')[0]
+  selector.innerHTML = ''
 
-  tableBody.innerHTML = ''
-
-  store.getState().record.records.map(r => {
-      const row = tableBody.insertRow()
-
-    row.innerHTML = `
-      <td>${r.year}</td>
-      <td>${r.traditional401k}</td>
-      <td>${r.roth401k}</td>
-      <td>${r.IRA}</td>
-      <td>${r.rothIRA}</td>
-      <td>${r.brokerage}</td>
-      <td>${r.withdraws}</td>
-      <td>${r.ssIncome}</td>
-      <td>${r.netIncome}</td>
-      <td>${r.taxes}</td>
-      <td>${r.grossIncome}</td>
-      <td>${r.inflationAdjustedIncome}</td>
-    `
+  store.getState().person.people.map(p => {
+    const option = document.createElement('option')
+    option.value = p.id
+    option.textContent = p.name
+    selector.appendChild(option)
   })
 }

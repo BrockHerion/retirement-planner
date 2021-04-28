@@ -24,8 +24,11 @@
   "homepage": "https://github.com/BrockHerion/ts-electron-boilerplate#readme",
   "dependencies": {
     "@reduxjs/toolkit": "^1.5.1",
+    "bootstrap": "^4.6.0",
     "dotenv": "^8.2.0",
     "electron": "^11.3.0",
+    "jquery": "^3.6.0",
+    "popper.js": "^1.16.1",
     "redux": "^4.1.0",
     "redux-persist": "^6.0.0",
     "uuid": "^8.3.2"
