@@ -42,15 +42,15 @@
                     <hr />
                     <form>
                       <div class="form-group">
-                        <label for="inputRoR">Expected Rate of Return</label>
+                        <label for="inputRoR">Expected Rate of Return (%)</label>
                         <input type="number" class="form-control" id="inputRoR" >
                       </div>
                       <div class="form-group">
-                        <label for="inputInflationRate">Expected Inflation Rate</label>             
+                        <label for="inputInflationRate">Expected Inflation Rate (%)</label>             
                         <input type="number" class="form-control" id="inputInflationRate" >
                       </div>
                       <div class="form-group">
-                        <label for="inputWithdrawRate">Withdraw rate in retirement</label>
+                        <label for="inputWithdrawRate">Withdraw rate in retirement (%)</label>
                         <input type="number" class="form-control" id="inputWithdrawRate" >
                       </div>
                       <div class="form-group">
@@ -70,16 +70,6 @@
                     
                       <div class="collapse navbar-collapse" id="navbarColor03">
                         <ul class="navbar-nav mr-auto">
-
-                          <li class="nav-item select my-2 my-lg-0">
-                            <div class="form-group m-auto mx-lg-0">
-                              <select class="form-control" id="outputType">
-                                <option>Tabular Output</option>
-                                <option>Graphic Output</option>
-                                <option>Tabular/Graphic Output</option>
-                              </select>
-                            </div>
-                          </li>
                           <li class="nav-item select my-2 my-lg-0">
                             <div class="form-group m-auto mx-lg-0">
                               <select class="form-control" id="personFilter">
@@ -111,23 +101,25 @@
                     </nav>
                   </div>
                   <div class="results__output">
-                    <table class="table">
+                    <table id="recordsTable" class="table">
                       <thead>
                         <tr>
                           <th scope="col">Year</th>
-                          <th scope="col">Traditional 401K</th>
+                          <th scope="col">401K</th>
                           <th scope="col">Roth 401K</th>
                           <th scope="col">IRA</th>
                           <th scope="col">Roth IRA</th>
                           <th scope="col">Brokerage</th>
                           <th scope="col">Withdraw</th>
-                          <th scope="col">SS Income</th>
+                          <th scope="col">Social Security</th>
                           <th scope="col">Net Income</th>
                           <th scope="col">Taxes</th>
-                          <th scope="col">Gross Inflation</th>                          
-                          <th scope="col">Inflation Adjusted Gross Income</th>
+                          <th scope="col">Gross Income</th>                          
+                          <th scope="col">Inflation AGI</th>
                         </tr>
                       </thead>
+                      <tbody>
+                      </tbody>
                     </table>
                   </div>
                 </div>

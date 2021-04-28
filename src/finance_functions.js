@@ -1,8 +1,12 @@
 const store = require('./data/store')
-// const person = require('./data/slices/person')
+const person = require('./data/slices/person')
+const record = require('./data/slices/record')
+const { addRecord, clearRecords } = record.actions
 
 function calculate(rateOfReturn, inflationRate, withdrawRate, yearsOfRetirement, personFilter, accountFilter){
-  //clear records
+  store.dispatch(
+    clearRecords()
+  )
   calculateModelData(rateOfReturn, inflationRate, withdrawRate, yearsOfRetirement, personFilter, accountFilter)
 }
 
@@ -11,17 +15,15 @@ function compoundInterest(principal , rate, periods, years) {
   return principal *  ((1 + (rate/periods))**(periods * years))
 }
 
-//Growth of contributions to an investment
+//Growth of parseFloat(contributions) to an investment
 function futureValueSeries(annual_contribution, rate, periods, years){
-
   return (annual_contribution / periods) * ((((1 + (rate/periods))**(periods * years)) -1) / (rate/periods))
 }
 
 //Growth fuctions combined into preand post retirement accumulation in the balance
 function accountGrowth(person_age, person_retirement_age, years, principal, annual_contribution, rate, periods){
   if ((person_age + years) < person_retirement_age) {
-    balance = compoundInterest(principal , rate, periods, 1) + futureValueSeries(contributions, rate, periods, 1)
-
+    balance = compoundInterest(principal , rate, periods, 1) + futureValueSeries(annual_contribution, rate, periods, 1)
   }else if ((person_age + years) >= person_retirement_age){
     balance = compoundInterest(principal , rate, periods, 1) 
   }
@@ -144,7 +146,12 @@ function calculateModelData(rateOfReturn, inflationRate, withdrawRate, yearsOfRe
   let gross = 0
   let inflationAdjustedIncome = 0
   let people = store.getState().person.people
-  
+  rateOfReturn = parseFloat(rateOfReturn/100)
+  inflationRate = parseFloat(inflationRate/100)
+  withdrawRate = parseFloat(withdrawRate/100)
+  yearsOfRetirement = parseFloat(yearsOfRetirement)
+
+
   //Loop for each year
   for(i=0; i < duration ; i++){
     const y = year++
@@ -154,148 +161,155 @@ function calculateModelData(rateOfReturn, inflationRate, withdrawRate, yearsOfRe
 
       //Loop for each Account
       for(a=0; a < people[p].accounts.length ; a++){
-
         switch(people[p].accounts[a].type){
-        case '401k':
-          //Set initial balance
-          if(traditional401kPriorBalance < 0){
-            traditional401kPriorBalance = people[p].accounts[a].balance
-          }
+          case '401k':
+            //Set initial balance
+            if(traditional401kPriorBalance < 0){
+              traditional401kPriorBalance = parseFloat(people[p].accounts[a].balance)
+            }
+            
+            //Three scenarios for contributions and withdraws based on age
+            const evalAge = parseFloat(people[p].age) + i
+            if (evalAge < 50 ){
+              contributions = parseFloat(people[p].accounts[a].annual_contribution)
+              
+              traditional401k = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, traditional401kPriorBalance, contributions, rateOfReturn, periods)
+              traditional401kPriorBalance = parseFloat(traditional401k)
 
-          //Three scenarios for contributions and withdraws based on age
-          if ((people[p].age + i) < 50 ) {
-            contributions = people[p].accounts[a].annual_contribution
+            }else if (evalAge >= 50 && evalAge < parseFloat(people[p].retirementAge)) {
+              contributions = parseFloat(people[p].accounts[a].annual_contribution) + parseFloat(people[p].accounts[a].catchup_contribution)
+                              
+              traditional401k = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, traditional401kPriorBalance, contributions, rateOfReturn, periods)
+              traditional401kPriorBalance = parseFloat(traditional401k)
 
-            traditional401k = accountGrowth(people[p].age, people[p].retirementAge, i, traditional401kPriorBalance, contributions, rateOfReturn, periods)
-            traditional401kPriorBalance = traditional401k
-          }else if ((people[p].age + i) >= 50 && (people[p].age + i) < people[p].retirementAge) {
-            contributions = people[p].accounts[a].annual_contribution + people[p].accounts[a].catchup_contribution
-                            
-            traditional401k = accountGrowth(people[p].age, people[p].retirementAge, i, traditional401kPriorBalance, contributions, rateOfReturn, periods)
-            traditional401kPriorBalance = traditional401k
-          }else if ((people[p].age + i) >= people[p].retirementAge){
-            contributions = 0
-                            
-            traditional401k = accountGrowth(people[p].age, people[p].retirementAge, i, traditional401kPriorBalance, contributions, rateOfReturn, periods)
-            withdrawAmount += withdraw(traditional401k, withdrawRate)
-            taxableWithdraws += withdrawAmount
-            traditional401kPriorBalance = (traditional401k - withdrawAmount)
-          }
-          break;
-        case 'Roth 401k':
-          //Set initial balance
-          if(roth401kPriorBalance < 0){
-            roth401kPriorBalance = people[p].accounts[a].balance
-          }
+            }else if (evalAge  >= parseFloat(people[p].retirementAge)){
+              contributions = 0
+                              
+              traditional401k = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, traditional401kPriorBalance, contributions, rateOfReturn, periods)
+              withdrawAmount += withdraw(traditional401k, withdrawRate)
+              taxableWithdraws += withdrawAmount
+              traditional401kPriorBalance = parseFloat(traditional401k - withdrawAmount)
+            }
+            
 
-          //Three scenarios for contributions and withdraws based on age
-          if ((people[p].age + i) < 50 ) {
-            contributions = people[p].accounts[a].annual_contribution
-            roth401k = accountGrowth(people[p].age, people[p].retirementAge, i, roth401kPriorBalance, contributions, rateOfReturn, periods)
-            roth401kPriorBalance = roth401k
-          }else if ((people[p].age + i) >= 50 && (people[p].age + i) < people[p].retirementAge) {
-            contributions = people[p].accounts[a].annual_contribution + people[p].accounts[a].catchup_contribution
-                            
-            roth401k = accountGrowth(people[p].age, people[p].retirementAge, i, roth401kPriorBalance, contributions, rateOfReturn, periods)
-            withdrawAmount += withdraw(traditional401k, withdrawRate)
-            roth401kPriorBalance = roth401k
-          }else if ((people[p].age + i) >= people[p].retirementAge){
-            contributions = 0
-                            
-            roth401k = accountGrowth(people[p].age, people[p].retirementAge, i, roth401kPriorBalance, contributions, rateOfReturn, periods)
-            withdrawAmount += withdraw(roth401k, withdrawRate)
-            nonTaxableWithdraws += withdrawAmount                   
-            roth401kPriorBalance = roth401k - withdrawAmount
-          }
-          break
-        case 'IRA':
-          //Set initial balance
-          if(iraPriorBalance < 0){
-            iraPriorBalance = people[p].accounts[a].balance
-          }
 
-          //Three scenarios for contributions and withdraws based on age
-          if ((people[p].age + i) < 50 ) {
-            contributions = people[p].accounts[a].annual_contribution
-
-            IRA = accountGrowth(people[p].age, people[p].retirementAge, i, iraPriorBalance, contributions, rateOfReturn, periods)
-            iraPriorBalance = IRA
-          }else if ((people[p].age + i) >= 50 && (people[p].age + i) < people[p].retirementAge) {
-            contributions = people[p].accounts[a].annual_contribution + people[p].accounts[a].catchup_contribution
-                            
-            IRA = accountGrowth(people[p].age, people[p].retirementAge, i, iraPriorBalance, contributions, rateOfReturn, periods)
-            iraPriorBalance = IRA
-          }else if ((people[p].age + i) >= people[p].retirementAge){
-            contributions = 0
-                            
-            IRA = accountGrowth(people[p].age, people[p].retirementAge, i, iraPriorBalance, contributions, rateOfReturn, periods)
-            withdrawAmount += withdraw(IRA, withdrawRate)
-            taxableWithdraws += withdrawAmount
-            iraPriorBalance = IRA - withdrawAmount
+            break;
+          case 'Roth 401k':
+            //Set initial balance
+            if(roth401kPriorBalance < 0){
+              roth401kPriorBalance = people[p].accounts[a].balance
+            }
+  
+            //Three scenarios for contributions and withdraws based on age
+            const evalAge = parseFloat(people[p].age) + i
+            if ((people[p].age + i) < 50 ) {
+              contributions = people[p].accounts[a].annual_contribution
+              roth401k = accountGrowth(people[p].age, people[p].retirementAge, i, roth401kPriorBalance, contributions, rateOfReturn, periods)
+              roth401kPriorBalance = roth401k
+            }else if ((people[p].age + i) >= 50 && (people[p].age + i) < people[p].retirementAge) {
+              contributions = people[p].accounts[a].annual_contribution + people[p].accounts[a].catchup_contribution
+                              
+              roth401k = accountGrowth(people[p].age, people[p].retirementAge, i, roth401kPriorBalance, contributions, rateOfReturn, periods)
+              withdrawAmount += withdraw(traditional401k, withdrawRate)
+              roth401kPriorBalance = roth401k
+            }else if ((people[p].age + i) >= people[p].retirementAge){
+              contributions = 0
+                              
+              roth401k = accountGrowth(people[p].age, people[p].retirementAge, i, roth401kPriorBalance, contributions, rateOfReturn, periods)
+              withdrawAmount += withdraw(roth401k, withdrawRate)
+              nonTaxableWithdraws += withdrawAmount                   
+              roth401kPriorBalance = roth401k - withdrawAmount
+            }
+            break
+          case 'IRA':
+            //Set initial balance
+            if(iraPriorBalance < 0){
+              iraPriorBalance = people[p].accounts[a].balance
+            }
+  
+            //Three scenarios for contributions and withdraws based on age
+            if ((people[p].age + i) < 50 ) {
+              contributions = people[p].accounts[a].annual_contribution
+  
+              IRA = accountGrowth(people[p].age, people[p].retirementAge, i, iraPriorBalance, contributions, rateOfReturn, periods)
+              iraPriorBalance = IRA
+            }else if ((people[p].age + i) >= 50 && (people[p].age + i) < people[p].retirementAge) {
+              contributions = people[p].accounts[a].annual_contribution + people[p].accounts[a].catchup_contribution
+                              
+              IRA = accountGrowth(people[p].age, people[p].retirementAge, i, iraPriorBalance, contributions, rateOfReturn, periods)
+              iraPriorBalance = IRA
+            }else if ((people[p].age + i) >= people[p].retirementAge){
+              contributions = 0
+                              
+              IRA = accountGrowth(people[p].age, people[p].retirementAge, i, iraPriorBalance, contributions, rateOfReturn, periods)
+              withdrawAmount += withdraw(IRA, withdrawRate)
+              taxableWithdraws += withdrawAmount
+              iraPriorBalance = IRA - withdrawAmount
+            }
+            break;
+          case 'Roth IRA':
+            //Set initial balance
+            if(rothIRAPriorBalance < 0){
+              rothIRAPriorBalance = people[p].accounts[a].balance
+            }
+  
+            //Three scenarios for contributions and withdraws based on age
+            if ((people[p].age + i) < 50 ) {
+              contributions = people[p].accounts[a].annual_contribution
+  
+              rothIRA = accountGrowth(people[p].age, people[p].retirementAge, i, rothIRAPriorBalance, contributions, rateOfReturn, periods)
+              rothIRAPriorBalance = rothIRA
+            }else if ((people[p].age + i) >= 50 && (people[p].age + i) < people[p].retirementAge) {
+              contributions = people[p].accounts[a].annual_contribution + people[p].accounts[a].catchup_contribution
+                              
+              rothIRA = accountGrowth(people[p].age, people[p].retirementAge, i, rothIRAPriorBalance, contributions, rateOfReturn, periods)
+              rothIRAPriorBalance = rothIRA
+            }else if ((people[p].age + i) >= people[p].retirementAge){
+              contributions = 0
+                              
+              rothIRA = accountGrowth(people[p].age, people[p].retirementAge, i, rothIRAPriorBalance, contributions, rateOfReturn, periods)
+              withdrawAmount += withdraw(rothIRA, withdrawRate)
+              nonTaxableWithdraws += withdrawAmount
+              rothIRAPriorBalance = rothIRA - withdrawAmount
+            }
+            break;
+          case 'Brokerage':
+            //Set initial balance
+            if(brokeragePriorBalance < 0){
+              brokeragePriorBalance = people[p].accounts[a].balance
+            }
+  
+            //Three scenarios for contributions and withdraws based on age
+            if ((people[p].age + i) < people[p].retirementAge ) {
+              contributions = people[p].accounts[a].annual_contribution
+  
+              brokerage = accountGrowth(people[p].age, people[p].retirementAge, i, brokeragePriorBalance, contributions, rateOfReturn, periods)
+              brokeragePriorBalance = brokerage
+            }else if ((people[p].age + i) >= people[p].retirementAge){
+              contributions = 0
+                              
+              brokerage = accountGrowth(people[p].age, people[p].retirementAge, i, brokeragePriorBalance, contributions, rateOfReturn, periods)
+              withdrawAmount += withdraw(brokerage, withdrawRate)
+              capitalGainsWithdraws += withdrawAmount
+              brokeragePriorBalance = brokerage - withdrawAmount
+            }
+            break
+          default:
+            //error
+            break
           }
-          break;
-        case 'Roth IRA':
-          //Set initial balance
-          if(rothIRAPriorBalance < 0){
-            rothIRAPriorBalance = people[p].accounts[a].balance
-          }
-
-          //Three scenarios for contributions and withdraws based on age
-          if ((people[p].age + i) < 50 ) {
-            contributions = people[p].accounts[a].annual_contribution
-
-            rothIRA = accountGrowth(people[p].age, people[p].retirementAge, i, rothIRAPriorBalance, contributions, rateOfReturn, periods)
-            rothIRAPriorBalance = rothIRA
-          }else if ((people[p].age + i) >= 50 && (people[p].age + i) < people[p].retirementAge) {
-            contributions = people[p].accounts[a].annual_contribution + people[p].accounts[a].catchup_contribution
-                            
-            rothIRA = accountGrowth(people[p].age, people[p].retirementAge, i, rothIRAPriorBalance, contributions, rateOfReturn, periods)
-            rothIRAPriorBalance = rothIRA
-          }else if ((people[p].age + i) >= people[p].retirementAge){
-            contributions = 0
-                            
-            rothIRA = accountGrowth(people[p].age, people[p].retirementAge, i, rothIRAPriorBalance, contributions, rateOfReturn, periods)
-            withdrawAmount += withdraw(rothIRA, withdrawRate)
-            nonTaxableWithdraws += withdrawAmount
-            rothIRAPriorBalance = rothIRA - withdrawAmount
-          }
-          break;
-        case 'Brokerage':
-          //Set initial balance
-          if(brokeragePriorBalance < 0){
-            brokeragePriorBalance = people[p].accounts[a].balance
-          }
-
-          //Three scenarios for contributions and withdraws based on age
-          if ((people[p].age + i) < people[p].retirementAge ) {
-            contributions = people[p].accounts[a].annual_contribution
-
-            brokerage = accountGrowth(people[p].age, people[p].retirementAge, i, brokeragePriorBalance, contributions, rateOfReturn, periods)
-            brokeragePriorBalance = brokerage
-          }else if ((people[p].age + i) >= people[p].retirementAge){
-            contributions = 0
-                            
-            brokerage = accountGrowth(people[p].age, people[p].retirementAge, i, brokeragePriorBalance, contributions, rateOfReturn, periods)
-            withdrawAmount += withdraw(brokerage, withdrawRate)
-            capitalGainsWithdraws += withdrawAmount
-            brokeragePriorBalance = brokerage - withdrawAmount
-          }
-          break
-        default:
-          //error
-          break
-        }
-        //reset at loop end
-        withdrawAmount=0
+          //reset at loop end
+          withdrawAmount=0
+        
       }
 
     //Income calculations
-    totalWithdraws = (taxableWithdraws + nonTaxableWithdraws + capitalGainsWithdraws).toFixed(2)
-    ssIncome = socialSecurityIncome(people[p].age, people[p].retirementAge, i, people[p].SSAge,people[p].estSSBenefits).toFixed(2)
-    net = netIncome(ssIncome, taxableWithdraws, nonTaxableWithdraws, capitalGainsWithdraws).toFixed(2)
-    taxes = taxesDue((taxableWithdraws + ssIncome), capitalGainsWithdraws).toFixed(2)
-    gross = (net - taxes).toFixed(2)
-    inflationAdjustedIncome = inflationAdjustedValue(gross, inflationRate, i).toFixed(2)
+    totalWithdraws = (taxableWithdraws + nonTaxableWithdraws + capitalGainsWithdraws)
+    ssIncome = socialSecurityIncome(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, people[p].SSAge,people[p].estSSBenefits)
+    net = netIncome(ssIncome, taxableWithdraws, nonTaxableWithdraws, capitalGainsWithdraws)
+    taxes = taxesDue((taxableWithdraws + ssIncome), capitalGainsWithdraws)
+    gross = (net - taxes)
+    inflationAdjustedIncome = inflationAdjustedValue(gross, inflationRate, i)
     }
 
 
