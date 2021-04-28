@@ -61,13 +61,45 @@ window.addEventListener('load',  () => {
       addPerson(newPerson)
     )
     saveFile()
-    bindPersonsGrid()
+    
+    bindData()
 
     addEditPersonForm.reset()
   })
 
-  bindPersonsGrid()
+  const addEditAccountForm = document.getElementById('addEditAccountForm')
+
+  addEditAccountForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+
+    const selectedPersonId = document.getElementById('selectPerson').value
+    const person = store.getState().person.people.find(p => p.id == selectedPersonId)
+
+    const formData = new FormData(addEditAccountForm)
+    const accountType = document.getElementById('selectAccountType')
+
+    const account = {
+      id: uuid.v4(),
+      type: accountType.value,
+      balance: formData.get('balance'),
+      annual_contribution: formData.get('annualContrib'),
+      catchup_contributuon: formData.get('catchupContrib')
+    }
+
+    person.accounts.push(account)
+
+    bindData()
+
+    addEditAccountForm.reset()
+  })
+
+  bindData()
 })
+
+const bindData = () => {
+  bindPersonsGrid()
+  bindAddAccountPersonSelector()
+}
 
 const bindPersonsGrid = () => {
   const tableBody = document.getElementById('personTable').getElementsByTagName('tbody')[0]
@@ -91,5 +123,18 @@ const bindPersonsGrid = () => {
         </button>
       </td>
     `
+  })
+}
+
+const bindAddAccountPersonSelector = () => {
+  const selector = document.getElementById('selectPerson')
+
+  selector.innerHTML = ''
+
+  store.getState().person.people.map(p => {
+    const option = document.createElement('option')
+    option.value = p.id
+    option.textContent = p.name
+    selector.appendChild(option)
   })
 }

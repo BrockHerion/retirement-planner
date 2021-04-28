@@ -29,9 +29,15 @@
     margin-top: .5rem;
 }
 
-#addPerson, #addPersonModalClose {
+#addPerson, #addPersonModalClose, #addAccount, #addAccountModalClose {
     margin-bottom:.5rem;
     display: flex;
     justify-content: center;
+    align-items: center;
+}
+
+.add-btns {
+    display: flex;
+    justify-content: space-around;
     align-items: center;
 }
