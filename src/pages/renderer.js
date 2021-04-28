@@ -73,7 +73,7 @@ window.addEventListener('load',  () => {
     e.preventDefault()
 
     const selectedPersonId = document.getElementById('selectPerson').value
-    const person = store.getState().person.people.find(p => p.id == selectedPersonId)
+    const person = store.getState().person.people.find(p => p.id === selectedPersonId)
 
     const formData = new FormData(addEditAccountForm)
     const accountType = document.getElementById('selectAccountType')
