@@ -5,9 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Retirement Planner</title>
-    <link href="../../assets/css/bootstrap.min.css" type="text/css" rel="stylesheet">
     <link href="../../assets/css/app.css" type="text/css" rel="stylesheet">
     <link href="../../assets/css/planning.css" type="text/css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link href="../../assets/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
     <script>require('./renderer.js')</script>
 </head>
 <body>
@@ -20,26 +23,39 @@
         <div class="wrapper">
             <section class="fill-height">
                 <div class="inputs">
-                    <h1>Model Parameters</h1>
+                    <div id="addPeople">
+                      <div class="add-btns">
+                        <button id="addPerson" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPersonModal">
+                          <i class="ri-add-line ri-xl"></i> Person
+                        </button>
+                        <button id="addAccount" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+                            <i class="ri-add-line ri-xl"></i> Account
+                        </button>
+                      </div>
+                      <table id="personTable" class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col"># Accounts</th>
+                            <th scope="col">Delete</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
+                    </div>
+                    <hr />
                     <form>
-                      <div>
-                        <label>[Table of Persons / Accounts goes here]</label>
-                        <button id="testAddPerson" class="btn btn-primary">TEST ADD PERSON</button>
-                      </div>
-                      <div>
-                        <label>-----------divider--------------</label>
-                      </div>
-
                       <div class="form-group">
-                        <label for="inputRoR">Expected Rate of Return</label>
+                        <label for="inputRoR">Expected Rate of Return (%)</label>
                         <input type="number" class="form-control" id="inputRoR" >
                       </div>
                       <div class="form-group">
-                        <label for="inputInflationRate">Expected Inflation Rate</label>             
+                        <label for="inputInflationRate">Expected Inflation Rate (%)</label>             
                         <input type="number" class="form-control" id="inputInflationRate" >
                       </div>
                       <div class="form-group">
-                        <label for="inputWithdrawRate">Withdraw rate in retirement</label>
+                        <label for="inputWithdrawRate">Withdraw rate in retirement (%)</label>
                         <input type="number" class="form-control" id="inputWithdrawRate" >
                       </div>
                       <div class="form-group">
@@ -51,29 +67,17 @@
             </section>
             <section class="fill-height">
                 <div class="results">
-                    <div class="results__filter">
-
+                  <div class="results__filter">
                     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                          
                       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                       </button>
                     
                       <div class="collapse navbar-collapse" id="navbarColor03">
                         <ul class="navbar-nav mr-auto">
-
                           <li class="nav-item select my-2 my-lg-0">
                             <div class="form-group m-auto mx-lg-0">
-                              <select class="form-control" id="outputType">
-                                <option>Tabular Output</option>
-                                <option>Graphic Output</option>
-                                <option>Tabular/Graphic Output</option>
-                              </select>
-                            </div>
-                          </li>
-                          <li class="nav-item select my-2 my-lg-0">
-                            <div class="form-group m-auto mx-lg-0">
-                              <select class="form-control" id="personFilter">
+                              <select class="form-select form-control" id="personFilter">
                                 <option>All People</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -84,7 +88,7 @@
                           </li>
                           <li class="nav-item select my-2 my-lg-0">
                             <div class="form-group m-auto mx-lg-0">
-                              <select class="form-control" id="accountFilter">
+                              <select class="form-select form-control" id="accountFilter">
                                 <option>All Accounts</option>
                                 <option>401k</option>
                                 <option>Roth 401k</option>
@@ -100,11 +104,123 @@
                         </form>
                       </div>
                     </nav>
-                    <p id="testTextSection"></p>
+                  </div>
+                  <div class="results__output">
+                    <table id="recordsTable" class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Year</th>
+                          <th scope="col">401K</th>
+                          <th scope="col">Roth 401K</th>
+                          <th scope="col">IRA</th>
+                          <th scope="col">Roth IRA</th>
+                          <th scope="col">Brokerage</th>
+                          <th scope="col">Withdraw</th>
+                          <th scope="col">Social Security</th>
+                          <th scope="col">Net Income</th>
+                          <th scope="col">Taxes</th>
+                          <th scope="col">Gross Income</th>                          
+                          <th scope="col">Inflation AGI</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
             </section>
         </div>
+
+        <div class="modal fade" id="addPersonModal" tabindex="-1" aria-labelledby="addPersonModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form role="form" id="addEditPersonForm">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addPersonModalLabel">Add/Edit Person</h5>
+                  <button type="button" id="addPersonModalClose" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="ri-close-circle-line ri-xl"></i>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                      <label for="personName">Name</label>
+                      <input type="text" name='name' id="personName" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <label for="personName">Age</label>
+                      <input type="number" name='age' id="personAge" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <label for="personName">Retirement Age</label>
+                      <input type="number" name="retirementAge" id="personRetirementAge" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <label for="personName">Est. SS Benefits</label>
+                      <input type="number" name="estSSBenefits" id="personEstSSBenefits" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <label for="personName">SS Age</label>
+                      <input type="number" name="SSAge" id="personSSAge" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form role="form" id="addEditAccountForm">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addAccountModalLabel">Add Account</h5>
+                  <button type="button" id="addAccountModalClose" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="ri-close-circle-line ri-xl"></i>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p id="accountErrors" class="error"></p>
+                    <div class="form-group">
+                      <label for="selectPerson">Select a Person</label>
+                      <select id="selectPerson" class="form-control form-select" aria-label="Select Person">
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="selectPerson">Select an Account Type</label>
+                      <select id="selectAccountType" class="form-select form-control" aria-label="Select Person">
+                        <option selected value="401k">401k</option>
+                        <option value="Roth 401k">Roth 401K</option>
+                        <option value="IRA">IRA</option>
+                        <option value="Roth IRA">Roth IRA</option>
+                        <option value="Investment">Investment</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="balance">Balance</label>
+                      <input type="number" name="balance" id="balance" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <label for="annualContrib">Annual Contribution</label>
+                      <input type="number" name="annualContrib" id="annualContrib" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <label for="catchupContib">Catchup Contribution</label>
+                      <input type="number" name="catchupContrib" id="catchupContrib" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        
     </main>
 </body>
 </html>

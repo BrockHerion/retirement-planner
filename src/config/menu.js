@@ -1,6 +1,6 @@
-const { app, Menu } = require('electron');
+const { app, Menu } = require('electron')
 
-const isMac = process.platform === 'darwin';
+const isMac = process.platform === 'darwin'
 
 const createMenu = () => {
   const template = [
@@ -12,30 +12,10 @@ const createMenu = () => {
         { role: 'quit' }
       ]
     }] : []),
-    {
-      label: 'File',
-      submenu: [
-        isMac ? { role: 'close' } : { role: 'quit' }
-      ]
-    },
-    {
-      label: 'People',
-      submenu: [
-        { label: 'Create Person' },
-        { label: 'Edit Person' }
-      ]
-    },
-    {
-      label: 'Accounts',
-      submenu: [
-        { label: 'Create Account' },
-        { label: 'Edit Account' }
-      ]
-    }
-  ];
+  ]
 
-  const menu = Menu.buildFromTemplate(template);
-  Menu.setApplicationMenu(menu);
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
 }
 
-module.exports = { createMenu };
+module.exports = { createMenu }
