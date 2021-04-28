@@ -11,6 +11,22 @@ const person = createSlice({
     },
     loadPeople: (state, {payload}) => {
       state.people = payload
+    },
+    addAccountToPerson: (state, {payload}) => {
+      state.people = state.people.map(p => {
+        if (p.id === payload.id) {
+          return {
+            ...payload.person,
+            accounts: [...payload.person.accounts, payload.account]
+          }
+        }
+        else {
+          return p
+        }
+      })
+    },
+    deletePerson: (state, {payload}) => {
+      state.people = state.people.filter(p => p.id !== payload.id)
     }
   }
 })
