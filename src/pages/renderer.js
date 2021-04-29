@@ -23,8 +23,7 @@ window.addEventListener('load',  () => {
     const personFilter = document.getElementById('personFilter').value
     const accountFilter = document.getElementById('accountFilter').value
 
-    //load file for testing
-    loadFile()
+
     calculate(rateOfReturn, inflationRate, withdrawRate, yearsOfRetirement, personFilter, accountFilter)
     bindRecordsGrid()
   })
@@ -77,7 +76,7 @@ window.addEventListener('load',  () => {
         type: accountType.value,
         balance: formData.get('balance'),
         annual_contribution: formData.get('annualContrib'),
-        catchup_contributuon: formData.get('catchupContrib')
+        catchup_contribution: formData.get('catchupContrib')
       }
 
       store.dispatch(

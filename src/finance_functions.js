@@ -11,17 +11,21 @@ function calculate(rateOfReturn, inflationRate, withdrawRate, yearsOfRetirement,
 
 //Growth of the investment principal 
 function compoundInterest(principal , rate, periods, years) {
+  // console.log('CI',principal , rate, periods, years)
+
   return principal *  ((1 + (rate/periods))**(periods * years))
 }
 
-//Growth of parseFloat(contributions) to an investment
+//Growth of contributions to an investment
 function futureValueSeries(annual_contribution, rate, periods, years){
+  // console.log('FV',annual_contribution, rate, periods, years)
   return (annual_contribution / periods) * ((((1 + (rate/periods))**(periods * years)) -1) / (rate/periods))
 }
 
 //Growth fuctions combined into preand post retirement accumulation in the balance
 function accountGrowth(person_age, person_retirement_age, years, principal, annual_contribution, rate, periods){
   let balance = 0
+  
   if ((person_age + years) < person_retirement_age) {
     balance = compoundInterest(principal , rate, periods, 1) + futureValueSeries(annual_contribution, rate, periods, 1)
   }else if ((person_age + years) >= person_retirement_age){
@@ -129,7 +133,7 @@ function calculateModelData(rateOfReturn, inflationRate, withdrawRate, yearsOfRe
   let IRA = 0
   let rothIRA = 0
   let brokerage = 0
-  let traditional401kPriorBalance = -1
+  let traditional401kPriorBalance = 0
   let roth401kPriorBalance = -1
   let iraPriorBalance = -1
   let rothIRAPriorBalance = -1
@@ -149,7 +153,16 @@ function calculateModelData(rateOfReturn, inflationRate, withdrawRate, yearsOfRe
   inflationRate = parseFloat(inflationRate/100)
   withdrawRate = parseFloat(withdrawRate/100)
   yearsOfRetirement = parseFloat(yearsOfRetirement)
-
+  let sumTraditional401k = 0
+  let sumRoth401k = 0
+  let sumIRA = 0
+  let sumRothIRA = 0
+  let sumBrokerage = 0
+  let map401kPriorBalances = new Map()
+  let mapRoth401kPriorBalances = new Map()
+  let mapIRAPriorBalances = new Map()
+  let mapRothIRAPriorBalances = new Map()
+  let mapBrokeragePriorBalances = new Map()
 
   //Loop for each year
   for(let i = 0; i < duration ; i++){
@@ -164,136 +177,144 @@ function calculateModelData(rateOfReturn, inflationRate, withdrawRate, yearsOfRe
         let contributions = 0
         switch(people[p].accounts[a].type){
         case '401k':
+          
           //Set initial balance
-          if(traditional401kPriorBalance < 0){
-            traditional401kPriorBalance = parseFloat(people[p].accounts[a].balance)
+          if(i== 0){
+            map401kPriorBalances.set(p, parseFloat(people[p].accounts[a].balance))
           }
-            
+          
           //Three scenarios for contributions and withdraws based on age
           evalAge = parseFloat(people[p].age) + i
           if (evalAge < 50 ){
             contributions = parseFloat(people[p].accounts[a].annual_contribution)
               
-            traditional401k = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, traditional401kPriorBalance, contributions, rateOfReturn, periods)
-            traditional401kPriorBalance = parseFloat(traditional401k)
-
+            traditional401k = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, map401kPriorBalances.get(p), contributions, rateOfReturn, periods)
+            map401kPriorBalances.set(p, parseFloat(traditional401k))
           }else if (evalAge >= 50 && evalAge < parseFloat(people[p].retirementAge)) {
             contributions = parseFloat(people[p].accounts[a].annual_contribution) + parseFloat(people[p].accounts[a].catchup_contribution)
                               
-            traditional401k = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, traditional401kPriorBalance, contributions, rateOfReturn, periods)
-            traditional401kPriorBalance = parseFloat(traditional401k)
-
+            traditional401k = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, map401kPriorBalances.get(p), contributions, rateOfReturn, periods)
+            map401kPriorBalances.set(p, parseFloat(traditional401k))
           }else if (evalAge  >= parseFloat(people[p].retirementAge)){
             contributions = 0
                               
-            traditional401k = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, traditional401kPriorBalance, contributions, rateOfReturn, periods)
+            traditional401k = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, map401kPriorBalances.get(p), contributions, rateOfReturn, periods)
             withdrawAmount += withdraw(traditional401k, withdrawRate)
             taxableWithdraws += withdrawAmount
-            traditional401kPriorBalance = parseFloat(traditional401k - withdrawAmount)
+            map401kPriorBalances.set(p, parseFloat(traditional401k - withdrawAmount))
           }
-            
-
-
+          sumTraditional401k += map401kPriorBalances.get(p)
+          
           break
-        case 'Roth 401k':
+        case 'roth401k':
           //Set initial balance
-          if(roth401kPriorBalance < 0){
-            roth401kPriorBalance = people[p].accounts[a].balance
+          if(i== 0){
+            mapRoth401kPriorBalances.set(p, parseFloat(people[p].accounts[a].balance))
           }
   
           //Three scenarios for contributions and withdraws based on age
           evalAge = parseFloat(people[p].age) + i
-          if ((people[p].age + i) < 50 ) {
-            contributions = people[p].accounts[a].annual_contribution
-            roth401k = accountGrowth(people[p].age, people[p].retirementAge, i, roth401kPriorBalance, contributions, rateOfReturn, periods)
-            roth401kPriorBalance = roth401k
-          }else if ((people[p].age + i) >= 50 && (people[p].age + i) < people[p].retirementAge) {
-            contributions = people[p].accounts[a].annual_contribution + people[p].accounts[a].catchup_contribution
+          if (evalAge < 50 ) {
+            contributions = parseFloat(people[p].accounts[a].annual_contribution)
+            
+            roth401k = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, mapRoth401kPriorBalances.get(p), contributions, rateOfReturn, periods)
+            mapRoth401kPriorBalances.set(p,parseFloat(roth401k))
+
+          }else if (evalAge >= 50 && evalAge < parseFloat(people[p].retirementAge)) {
+            contributions = parseFloat(people[p].accounts[a].annual_contribution) + parseFloat(people[p].accounts[a].catchup_contribution)
                               
-            roth401k = accountGrowth(people[p].age, people[p].retirementAge, i, roth401kPriorBalance, contributions, rateOfReturn, periods)
-            withdrawAmount += withdraw(traditional401k, withdrawRate)
-            roth401kPriorBalance = roth401k
-          }else if ((people[p].age + i) >= people[p].retirementAge){
+            roth401k = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, mapRoth401kPriorBalances.get(p), contributions, rateOfReturn, periods)
+            mapRoth401kPriorBalances.set(p, parseFloat(roth401k))
+          }else if (evalAge >= parseFloat(people[p].retirementAge)){
             contributions = 0
                               
-            roth401k = accountGrowth(people[p].age, people[p].retirementAge, i, roth401kPriorBalance, contributions, rateOfReturn, periods)
+            roth401k = accountGrowth(people[p].age, people[p].retirementAge, i, mapRoth401kPriorBalances.get(p), contributions, rateOfReturn, periods)
             withdrawAmount += withdraw(roth401k, withdrawRate)
             nonTaxableWithdraws += withdrawAmount                   
-            roth401kPriorBalance = roth401k - withdrawAmount
+            mapRoth401kPriorBalances.set(p,parseFloat(roth401k - withdrawAmount))
           }
+          sumRoth401k += mapRoth401kPriorBalances.get(p)
           break
         case 'IRA':
           //Set initial balance
-          if(iraPriorBalance < 0){
-            iraPriorBalance = people[p].accounts[a].balance
+          if(i== 0){
+            mapIRAPriorBalances.set(p, parseFloat(people[p].accounts[a].balance))
           }
   
           //Three scenarios for contributions and withdraws based on age
-          if ((people[p].age + i) < 50 ) {
-            contributions = people[p].accounts[a].annual_contribution
+          evalAge = parseFloat(people[p].age) + i
+          if (evalAge < 50 ) {
+            contributions = parseFloat(people[p].accounts[a].annual_contribution)
   
-            IRA = accountGrowth(people[p].age, people[p].retirementAge, i, iraPriorBalance, contributions, rateOfReturn, periods)
-            iraPriorBalance = IRA
-          }else if ((people[p].age + i) >= 50 && (people[p].age + i) < people[p].retirementAge) {
-            contributions = people[p].accounts[a].annual_contribution + people[p].accounts[a].catchup_contribution
+            IRA = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, mapIRAPriorBalances.get(p), contributions, rateOfReturn, periods)
+            mapIRAPriorBalances.set(p, parseFloat(IRA))
+          }else if (evalAge >= 50 && evalAge < parseFloat(people[p].retirementAge)) {
+            contributions = parseFloat(people[p].accounts[a].annual_contribution) + parseFloat(people[p].accounts[a].catchup_contribution)
                               
-            IRA = accountGrowth(people[p].age, people[p].retirementAge, i, iraPriorBalance, contributions, rateOfReturn, periods)
-            iraPriorBalance = IRA
-          }else if ((people[p].age + i) >= people[p].retirementAge){
+            IRA = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, mapIRAPriorBalances.get(p), contributions, rateOfReturn, periods)
+            mapIRAPriorBalances.set(p, parseFloat(IRA))
+          }else if (evalAge >= parseFloat(people[p].retirementAge)){
             contributions = 0
                               
-            IRA = accountGrowth(people[p].age, people[p].retirementAge, i, iraPriorBalance, contributions, rateOfReturn, periods)
+            IRA = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, mapIRAPriorBalances.get(p), contributions, rateOfReturn, periods)
             withdrawAmount += withdraw(IRA, withdrawRate)
             taxableWithdraws += withdrawAmount
-            iraPriorBalance = IRA - withdrawAmount
+            mapIRAPriorBalances.set(p, parseFloat(IRA - withdrawAmount))
           }
+          sumIRA += mapIRAPriorBalances.get(p)
           break
-        case 'Roth IRA':
+        case 'rothIRA':
           //Set initial balance
-          if(rothIRAPriorBalance < 0){
-            rothIRAPriorBalance = people[p].accounts[a].balance
+          if(i== 0){
+            mapRothIRAPriorBalances.set(p, parseFloat(people[p].accounts[a].balance))
           }
   
           //Three scenarios for contributions and withdraws based on age
-          if ((people[p].age + i) < 50 ) {
-            contributions = people[p].accounts[a].annual_contribution
+          evalAge = parseFloat(people[p].age) + i
+          if (evalAge < 50 ) {
+            contributions = parseFloat(people[p].accounts[a].annual_contribution)
   
-            rothIRA = accountGrowth(people[p].age, people[p].retirementAge, i, rothIRAPriorBalance, contributions, rateOfReturn, periods)
-            rothIRAPriorBalance = rothIRA
-          }else if ((people[p].age + i) >= 50 && (people[p].age + i) < people[p].retirementAge) {
-            contributions = people[p].accounts[a].annual_contribution + people[p].accounts[a].catchup_contribution
+            rothIRA = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, mapRothIRAPriorBalances.get(p), contributions, rateOfReturn, periods)
+            mapRothIRAPriorBalances.set(p, parseFloat(rothIRA))
+          }else if (evalAge >= 50 && evalAge < parseFloat(people[p].retirementAge)) {
+            contributions = parseFloat(people[p].accounts[a].annual_contribution) + parseFloat(people[p].accounts[a].catchup_contribution)
                               
-            rothIRA = accountGrowth(people[p].age, people[p].retirementAge, i, rothIRAPriorBalance, contributions, rateOfReturn, periods)
-            rothIRAPriorBalance = rothIRA
-          }else if ((people[p].age + i) >= people[p].retirementAge){
+            rothIRA = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, mapRothIRAPriorBalances.get(p), contributions, rateOfReturn, periods)
+            console.log(contributions, mapRothIRAPriorBalances.get(p), contributions, rateOfReturn, periods)
+            mapRothIRAPriorBalances.set(p, parseFloat(rothIRA))
+            
+          }else if (evalAge >= people[p].retirementAge){
             contributions = 0
                               
-            rothIRA = accountGrowth(people[p].age, people[p].retirementAge, i, rothIRAPriorBalance, contributions, rateOfReturn, periods)
+            rothIRA = accountGrowth(people[p].age, people[p].retirementAge, i, mapRothIRAPriorBalances.get(p), contributions, rateOfReturn, periods)
             withdrawAmount += withdraw(rothIRA, withdrawRate)
             nonTaxableWithdraws += withdrawAmount
-            rothIRAPriorBalance = rothIRA - withdrawAmount
+            mapRothIRAPriorBalances.set(p, parseFloat(rothIRA - withdrawAmount))
           }
+          sumRothIRA += mapRothIRAPriorBalances.get(p)
           break
-        case 'Brokerage':
+        case 'brokerage':
           //Set initial balance
-          if(brokeragePriorBalance < 0){
-            brokeragePriorBalance = people[p].accounts[a].balance
+          if(i== 0){
+            mapBrokeragePriorBalances.set(p, parseFloat(people[p].accounts[a].balance))
           }
   
-          //Three scenarios for contributions and withdraws based on age
-          if ((people[p].age + i) < people[p].retirementAge ) {
-            contributions = people[p].accounts[a].annual_contribution
+          //Two scenarios for contributions and withdraws based on age
+          evalAge = parseFloat(people[p].age) + i
+          if (evalAge < parseFloat(people[p].retirementAge) ) {
+            contributions = parseFloat(people[p].accounts[a].annual_contribution) + parseFloat(people[p].accounts[a].catchup_contribution)
   
-            brokerage = accountGrowth(people[p].age, people[p].retirementAge, i, brokeragePriorBalance, contributions, rateOfReturn, periods)
-            brokeragePriorBalance = brokerage
-          }else if ((people[p].age + i) >= people[p].retirementAge){
+            brokerage = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, mapBrokeragePriorBalances.get(p), contributions, rateOfReturn, periods)
+            mapBrokeragePriorBalances.set(p, parseFloat(brokerage))
+          }else if (evalAge >= parseFloat(people[p].retirementAge)){
             contributions = 0
                               
-            brokerage = accountGrowth(people[p].age, people[p].retirementAge, i, brokeragePriorBalance, contributions, rateOfReturn, periods)
+            brokerage = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, mapBrokeragePriorBalances.get(p), contributions, rateOfReturn, periods)
             withdrawAmount += withdraw(brokerage, withdrawRate)
             capitalGainsWithdraws += withdrawAmount
-            brokeragePriorBalance = brokerage - withdrawAmount
+            mapBrokeragePriorBalances.set(p, parseFloat(brokerage - withdrawAmount))
           }
+          sumBrokerage += mapBrokeragePriorBalances.get(p)
           break
         default:
           //error
@@ -301,30 +322,30 @@ function calculateModelData(rateOfReturn, inflationRate, withdrawRate, yearsOfRe
         }
         //reset at loop end
         withdrawAmount=0
-        
+
       }
 
       //Income calculations
+      
       totalWithdraws = (taxableWithdraws + nonTaxableWithdraws + capitalGainsWithdraws)
-      ssIncome = socialSecurityIncome(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, people[p].SSAge,people[p].estSSBenefits)
+      ssIncome = socialSecurityIncome(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, parseFloat(people[p].SSAge),parseFloat(people[p].estSSBenefits))
       net = netIncome(ssIncome, taxableWithdraws, nonTaxableWithdraws, capitalGainsWithdraws)
       taxes = taxesDue((taxableWithdraws + ssIncome), capitalGainsWithdraws)
       gross = (net - taxes)
       inflationAdjustedIncome = inflationAdjustedValue(gross, inflationRate, i)
     }
+    
+    
 
 
     //Add the Record to the dataset
-    // let record = {y,traditional401k,roth401k,IRA,rothIRA,brokerage,withdraws,ssIncome,net,taxes,gross,inflationAdjustedIncome}
-    // dataset.push(record)
-    
     const newRecord = {
       year: y,
-      traditional401k: parseFloat(traditional401k).toFixed(2),
-      roth401k: parseFloat(roth401k).toFixed(2),
-      rothIRA: parseFloat(rothIRA).toFixed(2),
-      IRA: parseFloat(IRA).toFixed(2),
-      brokerage: parseFloat(brokerage).toFixed(2),
+      traditional401k: parseFloat(sumTraditional401k).toFixed(2),
+      roth401k: parseFloat(sumRoth401k).toFixed(2),
+      IRA: parseFloat(sumIRA).toFixed(2),
+      rothIRA: parseFloat(sumRothIRA).toFixed(2),
+      brokerage: parseFloat(sumBrokerage).toFixed(2),
       withdraws: parseFloat(totalWithdraws).toFixed(2),
       ssIncome: parseFloat(ssIncome).toFixed(2),
       netIncome: parseFloat(net).toFixed(2),
@@ -338,12 +359,17 @@ function calculateModelData(rateOfReturn, inflationRate, withdrawRate, yearsOfRe
     )
 
     //reset at loop end
+    sumTraditional401k = 0
+    sumRoth401k = 0
+    sumIRA = 0
+    sumRothIRA = 0
+    sumBrokerage = 0
     taxableWithdraws = 0
     nonTaxableWithdraws = 0
     capitalGainsWithdraws = 0
   }
 
-  //return dataset
+
 }
 
 

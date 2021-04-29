@@ -12,25 +12,25 @@ function loadFile() {
     let data = fs.readFileSync(path)
     let people = JSON.parse(data)
     store.dispatch(loadPeople(people))
-    console.log('DONE LOADING FILE')
+
 
   } else {
     fs.writeFile(path, JSON.stringify([]), error => {
       if (error) throw error
-      console.log('DONE CREATING FILE')
+
     })
   }
 }
 
 // save file
 function saveFile() {
-  console.log('HERE')
+
   const people = store.getState().person.people
   const data = JSON.stringify(people)
   console.log(people)
   fs.writeFileSync(path, data, error => {
     if (error) throw error
-    console.log('DONE SAVING FILE')
+
   })
 }
 
