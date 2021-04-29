@@ -8,7 +8,7 @@ require('dotenv').config()
 const env = process.env.NODE_ENV || 'development'
 
 if (env === 'development') {
-    enableHotReload()
+  enableHotReload()
 }
 
 app.on('ready', () => {
@@ -24,7 +24,7 @@ app.on('ready', () => {
   })
   createMenu()
 
-    const index = path.join(__dirname, 'src/pages/index.html')
+  const index = path.join(__dirname, 'src/pages/index.html')
 
   window.loadFile(index)
     .then(() => {
@@ -33,8 +33,4 @@ app.on('ready', () => {
     .catch((e) => {
       console.error(`An error occurred: ${e}`)
     })
-
-  if (env === 'development') {
-    window.webContents.openDevTools()
-  }
 })
