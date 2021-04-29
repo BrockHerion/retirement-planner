@@ -75,29 +75,24 @@
                     
                       <div class="collapse navbar-collapse" id="navbarColor03">
                         <ul class="navbar-nav mr-auto">
-                          <li class="nav-item select my-2 my-lg-0">
+                          <li class="nav-item my-2 my-lg-0 mr-2">
                             <div class="form-group m-auto mx-lg-0">
                               <select class="form-select form-control" id="personFilter">
-                                <option>All People</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
                               </select>
                             </div>
                           </li>
-                          <li class="nav-item select my-2 my-lg-0">
+                          <li class="nav-item my-2 my-lg-0">
                             <div class="form-group m-auto mx-lg-0">
                               <select class="form-select form-control" id="accountFilter">
-                                <option>All Accounts</option>
-                                <option>401k</option>
-                                <option>Roth 401k</option>
-                                <option>IRA</option>
-                                <option>Roth IRA</option>
-                                <option>Brokerage Account</option>
+                                <option value="all">All Accounts</option>
+                                <option value="401k">401k</option>
+                                <option value="Roth 401k">Roth 401k</option>
+                                <option value="IRA">IRA</option>
+                                <option value="Roth IRA">Roth IRA</option>
+                                <option value="Investment">Investment</option>
                               </select>
                             </div>
-                        </li>
+                          </li>
                         </ul>
                         <form class="form-inline m-auto mx-lg-0">
                           <button class="btn btn-primary my-2 my-sm-0" id="btn_calculate" type="submit">Calculate</button>
@@ -183,7 +178,7 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                  <p id="accountErrors" class="error"></p>
+                  <p id="accountErrors" class="text-danger"></p>
                     <div class="form-group">
                       <label for="selectPerson">Select a Person</label>
                       <select id="selectPerson" class="form-control form-select" aria-label="Select Person">

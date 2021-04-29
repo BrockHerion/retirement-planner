@@ -7,6 +7,8 @@ const { calculate } = require('../finance_functions')
 const { addPerson, addAccountToPerson, deletePerson } = person.actions
 
 window.addEventListener('load',  () => {
+  loadFile()
+  bindData()
 
   const calculateButton = document.getElementById('btn_calculate')
   document.getElementById('inputRoR').value = 7
@@ -63,17 +65,17 @@ window.addEventListener('load',  () => {
     const person = store.getState().person.people.find(p => p.id === selectedPersonId)
 
     const formData = new FormData(addEditAccountForm)
-    const accountType = document.getElementById('selectAccountType')
+    const accountType = document.getElementById('selectAccountType').value
 
-    const includedAccounts = person.accounts.filter(a => a.type === accountType)
-    console.log(includedAccounts)
+    const includedAccount = person.accounts.find(a => a.type === accountType)
+    console.log(includedAccount)
 
-    if (includedAccounts.length > 0) {
-      document.getElementById('accountError').innerText = 'Error: Account type already added'
+    if (includedAccount) {
+      document.getElementById('accountErrors').innerText = 'Error: Account type already added'
     } else {
       const account = {
         id: uuid.v4(),
-        type: accountType.value,
+        type: accountType,
         balance: formData.get('balance'),
         annual_contribution: formData.get('annualContrib'),
         catchup_contribution: formData.get('catchupContrib')
@@ -91,13 +93,12 @@ window.addEventListener('load',  () => {
 
 
   })
-
-  bindData()
 })
 
 const bindData = () => {
   bindPersonsGrid()
   bindAddAccountPersonSelector()
+  bindPersonFilter()
 }
 
 const deletePersonFromTable = (e) => {
@@ -108,6 +109,7 @@ const deletePersonFromTable = (e) => {
     deletePerson({id: personId})
   )
 
+  saveFile()
   bindData()
 }
 
@@ -137,11 +139,28 @@ const bindPersonsGrid = () => {
   })
 }
 
-
 const bindAddAccountPersonSelector = () => {
   const selector = document.getElementById('selectPerson')
 
   selector.innerHTML = ''
+
+  store.getState().person.people.map(p => {
+    const option = document.createElement('option')
+    option.value = p.id
+    option.textContent = p.name
+    selector.appendChild(option)
+  })
+}
+
+const bindPersonFilter = () => {
+  const selector = document.getElementById('personFilter')
+
+  selector.innerHTML = ''
+
+  const allPeople = document.createElement('option')
+  allPeople.value = 'all'
+  allPeople.textContent = 'All People'
+  selector.appendChild(allPeople)
 
   store.getState().person.people.map(p => {
     const option = document.createElement('option')
