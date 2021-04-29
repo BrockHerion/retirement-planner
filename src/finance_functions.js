@@ -308,7 +308,7 @@ function calculateModelData(rateOfReturn, inflationRate, withdrawRate, yearsOfRe
           }
           sumRothIRA += mapRothIRAPriorBalances.get(p)
           break
-        case 'brokerage':
+        case 'Investment':
           //Set initial balance
           if(i== 0){
             mapBrokeragePriorBalances.set(p, parseFloat(people[p].accounts[a].balance))
