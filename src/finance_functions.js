@@ -152,7 +152,7 @@ function calculateModelData(rateOfReturn, inflationRate, withdrawRate, yearsOfRe
   else {
     people = store.getState().person.people.filter(p => p.id === personFilter)
   }
-
+  
   rateOfReturn = parseFloat(rateOfReturn/100)
   inflationRate = parseFloat(inflationRate/100)
   withdrawRate = parseFloat(withdrawRate/100)
