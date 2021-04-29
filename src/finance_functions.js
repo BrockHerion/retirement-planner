@@ -221,7 +221,7 @@ function calculateModelData(rateOfReturn, inflationRate, withdrawRate, yearsOfRe
           sumTraditional401k += map401kPriorBalances.get(p)
           
           break
-        case 'roth401k':
+        case 'Roth 401k':
           //Set initial balance
           if(i== 0){
             mapRoth401kPriorBalances.set(p, parseFloat(people[p].accounts[a].balance))
@@ -231,7 +231,7 @@ function calculateModelData(rateOfReturn, inflationRate, withdrawRate, yearsOfRe
           evalAge = parseFloat(people[p].age) + i
           if (evalAge < 50 ) {
             contributions = parseFloat(people[p].accounts[a].annual_contribution)
-            
+            console.log(contributions)
             roth401k = accountGrowth(parseFloat(people[p].age), parseFloat(people[p].retirementAge), i, mapRoth401kPriorBalances.get(p), contributions, rateOfReturn, periods)
             mapRoth401kPriorBalances.set(p,parseFloat(roth401k))
 
@@ -278,7 +278,7 @@ function calculateModelData(rateOfReturn, inflationRate, withdrawRate, yearsOfRe
           }
           sumIRA += mapIRAPriorBalances.get(p)
           break
-        case 'rothIRA':
+        case 'Roth IRA':
           //Set initial balance
           if(i== 0){
             mapRothIRAPriorBalances.set(p, parseFloat(people[p].accounts[a].balance))
