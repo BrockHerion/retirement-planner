@@ -144,7 +144,15 @@ function calculateModelData(rateOfReturn, inflationRate, withdrawRate, yearsOfRe
   let taxes = 0
   let gross = 0
   let inflationAdjustedIncome = 0
-  let people = store.getState().person.people
+
+  let people = []
+  if (personFilter === 'all') {
+    people = store.getState().person.people
+  }
+  else {
+    people = store.getState().person.people.filter(p => p.id === personFilter)
+  }
+  
   rateOfReturn = parseFloat(rateOfReturn/100)
   inflationRate = parseFloat(inflationRate/100)
   withdrawRate = parseFloat(withdrawRate/100)
@@ -154,13 +162,20 @@ function calculateModelData(rateOfReturn, inflationRate, withdrawRate, yearsOfRe
   //Loop for each year
   for(let i = 0; i < duration ; i++){
     const y = year++
-        
+    
     //Loop for each Person
     for(let p = 0; p < people.length ; p++){
       let evalAge = 0
 
+      let accounts = []
+      if (accountFilter === 'all') {
+        accounts = people[p].accounts
+      } else {
+        accounts = people[p].accounts.filter(a => a.name === accountFilter)
+      }
+
       //Loop for each Account
-      for(let a = 0; a < people[p].accounts.length ; a++){
+      for(let a = 0; a < accounts.length ; a++){
         let contributions = 0
         switch(people[p].accounts[a].type){
         case '401k':
